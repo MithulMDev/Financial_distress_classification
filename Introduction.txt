@@ -1,0 +1,35 @@
+Steps to follow:
+
+Note:
+    (Run EDA in jupyter notebook, the ML models in VScode)
+
+- EDA 
+    - IQR info (percentiles) and diagram
+    - Scatter plots
+    - Correlation matrix
+    - Box plots
+    - Violin plots
+    - Outlier detection - z-scores, Tukey's fences, isolation forests
+
+- Preprocessing
+    - Delete the unnecessary variables
+    - Null values imputation - autoencoders, MICE
+
+- Grouping the variables under the headers
+
+- Dimensionality reduction
+    - PCA
+
+- Algorithms training
+    - RGF
+    - RF
+    - SVM
+    - ANN
+
+- Evaluation metrics
+    - Accuracy
+    - F1
+    - Confusion matrix
+    - AUC-ROC
+
+
