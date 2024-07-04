@@ -1,0 +1,33 @@
+Get the data from Kaggle
+Preprocessing:
+    - Drop all the columns except the ratios from 34 till "Label"
+        - Drop all the rows that has more than 3 or 2 null values
+
+    - Impute the null values using MICE or autoencoders
+    - Use class imbalance hanlding - Kmeans SMOTE (cluster based SMOTE)
+
+    - Group all the ratios under thier headers such that a header has more than 2 ratios under it
+    - Use PCA to reduce the dimensionality of the headers = this will the new dataset
+
+    - Use this to split train and test dataset
+    - Train and test these models:
+        - ANN
+        - XGB
+        - Gradientboosting
+        - SVM
+        - Logistic regression
+        - Naive bayes
+        - Random forests
+
+
+The parameters addressed are as follows:
+    - Since the real life data for financial distress prediction are noisy  as there are varying scales of operations across companies that result in varied scales of financial play, and avoiding or dropping them can alter the real patterns if it is not handled properl.
+    - The real life datasets are also observed to have only fewer companies are identified to be in financial distress, this can lead to not so efficient predictive models.
+        - Altering and treating them can infact modify the real life patterns in the data.
+    - Use MICE and Kmeans SMOTE to match the real life noisy data, while also making it to be useful for Training and predictions
+
+    - Most of the times, only selective ratios are taken for prediction, which may not cover the needed and important data that induces the algorithm for correct predictions. And infact may not cover the wide financial perspective.
+    - Grouping ratios under their headers and treating them with PCA to reduce dimensionality
+    - It preserves the interpretability of various types of financial ratios while still benefiting from the dimensionality reduction of PCA.
+    - It reduces bias in ratio selection
+    - Potential for discovering real or novel patterns by including a broader set of ratios and applying PCA within categories
