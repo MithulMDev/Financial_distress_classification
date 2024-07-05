@@ -5,7 +5,7 @@ Preprocessing:
 
     - isolation forests, Z scores - Explainabiility
 
-    -- To include EDA for Non linear datasets - explain
+    - Linear regression and Random forest regression are used to know the pattern of the data - linear or non-linear
 
     - Impute the null values using MICE or autoencoders
     - Use class imbalance hanlding - Kmeans SMOTE (cluster based SMOTE)
