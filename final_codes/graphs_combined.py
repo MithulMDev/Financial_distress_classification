@@ -60,4 +60,8 @@ kmsmote_mice_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\F
 svmsmote_ae_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\Final graphs\\combined_svmsmote_ae_images.png"
 svmsmote_mice_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\Final graphs\\combined_svmsmote_mice_images.png"
 
-combine_png_images(input_folder, adasyn_ae_output, adasyn_mice_output, kmsmote_ae_output, kmsmote_mice_output, svmsmote_ae_output, svmsmote_mice_output)
+
+
+if __name__ == "__main__":
+    
+    combine_png_images(input_folder, adasyn_ae_output, adasyn_mice_output, kmsmote_ae_output, kmsmote_mice_output, svmsmote_ae_output, svmsmote_mice_output)
