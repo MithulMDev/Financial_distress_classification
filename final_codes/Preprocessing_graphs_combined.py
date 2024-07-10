@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-def combine_png_images(input_folder, adasyn_ae_output, adasyn_mice_output, kmsmote_ae_output, kmsmote_mice_output, svmsmote_ae_output, svmsmote_mice_output):
+def combine_png_images(input_folder, adasyn_output, kmeans_output, svmsmote_output, ae_mice_output, all_cih_output):
     # Get all PNG files in the input folder
     png_files = [f for f in os.listdir(input_folder) if f.lower().endswith('.png')]
     
@@ -9,13 +9,12 @@ def combine_png_images(input_folder, adasyn_ae_output, adasyn_mice_output, kmsmo
         print("No PNG files found in the specified folder.")
         return
 
-    # Separate files into lists
-    adasyn_ae_files = [f for f in png_files if f.startswith('ADASYN_AE_3_PCA')]
-    adasyn_mice_files = [f for f in png_files if f.startswith('ADASYN_MICE_3_PCA')]
-    kmsmote_ae_files = [f for f in png_files if f.startswith('KMSMOTE_AE_3_PCA')]
-    kmsmote_mice_files = [f for f in png_files if f.startswith('KMSMOTE_MICE_3_PCA')]
-    svmsmote_ae_files = [f for f in png_files if f.startswith('SVMSMOTE_AE_3_PCA')]
-    svmsmote_mice_files = [f for f in png_files if f.startswith('SVMSMOTE_MICE_3_PCA')]
+    # Separate files into lists based on prefixes
+    adasyn_files = [f for f in png_files if f.startswith('ADASYN')]
+    kmeans_files = [f for f in png_files if f.startswith('KMeans')]
+    svmsmote_files = [f for f in png_files if f.startswith('SVMSMOTE')]
+    ae_mice_files = [f for f in png_files if f.startswith('AE') or f.startswith('MICE')]
+    prior_files = [f for f in png_files if f.startswith('Prior')]
 
     # Function to combine images for a given list of files
     def combine_images(file_list, output_file):
@@ -43,20 +42,20 @@ def combine_png_images(input_folder, adasyn_ae_output, adasyn_mice_output, kmsmo
         combined_image.save(output_file)
         print(f"Combined image saved as {output_file}")
 
-    # Combine images for each group
-    combine_images(adasyn_ae_files, adasyn_ae_output)
-    combine_images(adasyn_mice_files, adasyn_mice_output)
-    combine_images(kmsmote_ae_files, kmsmote_ae_output)
-    combine_images(kmsmote_mice_files, kmsmote_mice_output)
-    combine_images(svmsmote_ae_files, svmsmote_ae_output)
-    combine_images(svmsmote_mice_files, svmsmote_mice_output)
+    # Combine images for each group along with prior files
+    combine_images(prior_files + adasyn_files, adasyn_output)
+    combine_images(prior_files + kmeans_files, kmeans_output)
+    combine_images(prior_files + svmsmote_files, svmsmote_output)
+    combine_images(prior_files + ae_mice_files, ae_mice_output)
+    combine_images(prior_files + adasyn_files + kmeans_files + svmsmote_files, all_cih_output)
 
 # Example usage
-input_folder = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\Lime and shap graphs"
-adasyn_ae = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\Final graphs\\Preprocess_combined_adasyn_ae_images.png"
-# and so on for others
-
+input_folder = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE graphs"
+adasyn_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE combined graphs\\ADASYN_TSNE_combined.png"
+kmeans_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE combined graphs\\KMeans_TSNE_combined.png"
+svmsmote_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE combined graphs\\SVMSMOTE_TSNE_combined.png"
+ae_mice_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE combined graphs\\AE_MICE_TSNE_combined.png"
+all_cih_output = "C:\\Users\\dev\\Desktop\\MSC thesis\\Code\\final_codes\\TSNE combined graphs\\ALL_ClassIH_TSNE_combined.png"
 
 if __name__ == "__main__":
-    
-    combine_png_images(input_folder, adasyn_ae, adasyn_mice_output, kmsmote_ae_output, kmsmote_mice_output, svmsmote_ae_output, svmsmote_mice_output)
+    combine_png_images(input_folder, adasyn_output, kmeans_output, svmsmote_output, ae_mice_output, all_cih_output)
