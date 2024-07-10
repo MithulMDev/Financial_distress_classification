@@ -36,6 +36,7 @@
 
 - <b>Visualize TSNE graphs<b>
 - This is to capture pattern of the data
+- explain about the prior and post methods TSNE graphs and your interpretations
   -------------------------- should populate
 
 
