@@ -7577,13 +7577,12 @@ a.anchor-link {
 
 
 <span class="kn">from</span> <span class="nn">xgboost</span> <span class="kn">import</span> <span class="n">XGBClassifier</span>
-<span class="kn">from</span> <span class="nn">rgf.sklearn</span> <span class="kn">import</span> <span class="n">RGFClassifier</span>  <span class="c1"># Regularized Greedy Forest</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span>
 
 
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">roc_curve</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
 
@@ -7724,6 +7723,7 @@ a.anchor-link {
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Models have been tested in </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">predictions</span>
 
+
 <span class="k">def</span> <span class="nf">evaluate_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">X_test</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Evaluate the performance of models.</span>
@@ -7735,11 +7735,15 @@ a.anchor-link {
             <span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
             <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
             <span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+            <span class="n">recall</span> <span class="o">=</span> <span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
             <span class="n">auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">'ANN'</span> <span class="k">else</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
             <span class="n">metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">'accuracy'</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
                 <span class="s1">'confusion_matrix'</span><span class="p">:</span> <span class="n">cm</span><span class="p">,</span>
                 <span class="s1">'f1_score'</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+                <span class="s1">'precision'</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
+                <span class="s1">'recall'</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span>
                 <span class="s1">'auc_roc'</span><span class="p">:</span> <span class="n">auc</span>
             <span class="p">}</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -8027,8 +8031,8 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 09:28:33,699 - INFO - Dataset has been split and returned
-2024-07-07 09:28:33,704 - INFO - Data has been standardized
+<pre>2024-07-11 08:31:11,199 - INFO - Dataset has been split and returned
+2024-07-11 08:31:11,205 - INFO - Data has been standardized
 </pre>
 </div>
 </div>
@@ -8042,70 +8046,70 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 09:30:56,632 - INFO - ANN has been trained in 142.93 seconds
-2024-07-07 09:43:48,365 - INFO - RandomForest has been trained in 771.73 seconds
-2024-07-07 09:44:00,790 - INFO - XGBoost has been trained in 12.42 seconds
-2024-07-07 09:54:50,891 - INFO - SVM has been trained in 650.10 seconds
-2024-07-07 09:54:51,469 - INFO - LogisticRegression has been trained in 0.58 seconds
-2024-07-07 10:32:21,092 - INFO - GradientBoosting has been trained in 2249.62 seconds
-2024-07-07 10:32:22,918 - INFO - KNN has been trained in 1.83 seconds
-2024-07-07 10:32:22,925 - INFO - Naive Bayes has been trained in 0.01 seconds
+<pre>2024-07-11 08:34:06,839 - INFO - ANN has been trained in 175.63 seconds
+2024-07-11 08:53:11,627 - INFO - RandomForest has been trained in 1144.79 seconds
+2024-07-11 08:53:25,576 - INFO - XGBoost has been trained in 13.95 seconds
+2024-07-11 09:12:31,895 - INFO - SVM has been trained in 1146.32 seconds
+2024-07-11 09:12:32,570 - INFO - LogisticRegression has been trained in 0.68 seconds
+2024-07-11 10:04:09,153 - INFO - GradientBoosting has been trained in 3096.58 seconds
+2024-07-11 10:04:12,375 - INFO - KNN has been trained in 3.22 seconds
+2024-07-11 10:04:12,382 - INFO - Naive Bayes has been trained in 0.01 seconds
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 741us/step
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 624us/step
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 10:32:24,648 - INFO - Models have been tested in 1.72 seconds
+<pre>2024-07-11 10:04:15,766 - INFO - Models have been tested in 3.38 seconds
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 830us/step
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 496us/step
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 10:32:26,391 - INFO - Models have been evaluated in 1.74 seconds
-2024-07-07 10:33:30,987 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 10:33:32,109 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 10:33:33,238 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 10:33:34,291 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 10:33:49,064 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 10:34:04,006 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 10:34:18,932 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 10:34:19,312 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 10:34:19,613 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 10:34:21,450 - INFO - LIME explanation for SVM created and saved
-2024-07-07 10:34:21,729 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 10:34:22,081 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 10:34:22,447 - INFO - LIME explanation for KNN created and saved
-2024-07-07 10:34:22,746 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 10:34:22,747 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 10:34:22,773 - INFO - ANN model saved
-2024-07-07 10:34:22,807 - INFO - RandomForest model saved
-2024-07-07 10:34:22,818 - INFO - XGBoost model saved
-2024-07-07 10:34:22,821 - INFO - SVM model saved
-2024-07-07 10:34:22,823 - INFO - LogisticRegression model saved
-2024-07-07 10:34:22,852 - INFO - GradientBoosting model saved
-2024-07-07 10:34:22,855 - INFO - KNN model saved
-2024-07-07 10:34:22,857 - INFO - NaiveBayes model saved
-2024-07-07 10:34:22,858 - INFO - Models have been saved
-2024-07-07 10:34:22,880 - INFO - Model interpretation summary created
-2024-07-07 10:34:22,882 - INFO - Results have been documented.
-2024-07-07 10:34:22,900 - INFO - Dataset has been split and returned
-2024-07-07 10:34:22,910 - INFO - Data has been standardized
+<pre>2024-07-11 10:04:19,158 - INFO - Models have been evaluated in 3.39 seconds
+2024-07-11 10:10:01,674 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 10:10:03,183 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 10:10:04,567 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 10:10:05,978 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 10:10:28,596 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 10:10:51,199 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 10:11:14,685 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 10:11:15,338 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 10:11:15,769 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 10:11:19,169 - INFO - LIME explanation for SVM created and saved
+2024-07-11 10:11:19,511 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 10:11:19,904 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 10:11:20,419 - INFO - LIME explanation for KNN created and saved
+2024-07-11 10:11:20,755 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 10:11:20,756 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 10:11:20,822 - INFO - ANN model saved
+2024-07-11 10:11:20,926 - INFO - RandomForest model saved
+2024-07-11 10:11:20,938 - INFO - XGBoost model saved
+2024-07-11 10:11:20,942 - INFO - SVM model saved
+2024-07-11 10:11:20,945 - INFO - LogisticRegression model saved
+2024-07-11 10:11:20,985 - INFO - GradientBoosting model saved
+2024-07-11 10:11:20,990 - INFO - KNN model saved
+2024-07-11 10:11:20,994 - INFO - NaiveBayes model saved
+2024-07-11 10:11:20,995 - INFO - Models have been saved
+2024-07-11 10:11:21,046 - INFO - Model interpretation summary created
+2024-07-11 10:11:21,058 - INFO - Results have been documented.
+2024-07-11 10:11:21,072 - INFO - Dataset has been split and returned
+2024-07-11 10:11:21,083 - INFO - Data has been standardized
 </pre>
 </div>
 </div>
@@ -8117,30 +8121,30 @@ a.anchor-link {
 RandomForest Model:
 Feature Importance from RandomForest Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.286178
-Liquidity_and_Coverage_Ratios_PC1    0.159292
-      Cost_and_Expense_Ratios_PC1    0.097693
-      Cost_and_Expense_Ratios_PC2    0.091679
-         Profitability_Ratios_PC1    0.081257
-              Activity_Ratios_PC1    0.052102
-              Activity_Ratios_PC2    0.037529
-Liquidity_and_Coverage_Ratios_PC2    0.032083
-             Cash_Flow_Ratios_PC1    0.025838
-             Cash_Flow_Ratios_PC2    0.024492
+              Leverage_Ratios_PC1    0.234203
+      Cost_and_Expense_Ratios_PC1    0.170083
+Liquidity_and_Coverage_Ratios_PC1    0.156748
+      Cost_and_Expense_Ratios_PC2    0.100231
+Liquidity_and_Coverage_Ratios_PC2    0.051738
+              Leverage_Ratios_PC2    0.041782
+         Profitability_Ratios_PC1    0.033791
+             Cash_Flow_Ratios_PC1    0.029567
+         Profitability_Ratios_PC2    0.026615
+              Activity_Ratios_PC1    0.026388
 
 XGBoost Model:
 Feature Importance from XGBoost Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.442036
-      Cost_and_Expense_Ratios_PC1    0.099987
-         Profitability_Ratios_PC1    0.080053
-              Activity_Ratios_PC1    0.048228
-Liquidity_and_Coverage_Ratios_PC2    0.043795
-Liquidity_and_Coverage_Ratios_PC1    0.039131
-             Cash_Flow_Ratios_PC1    0.031891
-             Per_Share_Ratios_PC2    0.031738
-              Activity_Ratios_PC2    0.030428
-         Profitability_Ratios_PC2    0.028905
+              Leverage_Ratios_PC1    0.429280
+      Cost_and_Expense_Ratios_PC1    0.142012
+Liquidity_and_Coverage_Ratios_PC1    0.055873
+Liquidity_and_Coverage_Ratios_PC2    0.055459
+              Activity_Ratios_PC2    0.033337
+              Activity_Ratios_PC1    0.033284
+             Cash_Flow_Ratios_PC1    0.032824
+         Profitability_Ratios_PC2    0.030094
+             Per_Share_Ratios_PC2    0.028540
+         Profitability_Ratios_PC1    0.026827
 
 SVM Model:
 Feature Importance from SVM Model:
@@ -8159,30 +8163,30 @@ Liquidity_and_Coverage_Ratios_PC2       None
 LogisticRegression Model:
 Feature Importance from LogisticRegression Model:
                           Feature  Importance
-             Per_Share_Ratios_PC1    4.976303
-              Leverage_Ratios_PC1    1.882347
-         Profitability_Ratios_PC2    1.088192
-             Per_Share_Ratios_PC2    0.908395
-Liquidity_and_Coverage_Ratios_PC2    0.013621
-                Growth_Ratios_PC2   -0.025563
-              Leverage_Ratios_PC2   -0.140990
-              Activity_Ratios_PC2   -0.291410
-             Cash_Flow_Ratios_PC2   -0.545816
-      Cost_and_Expense_Ratios_PC2   -0.685676
+      Cost_and_Expense_Ratios_PC1    7.757142
+         Profitability_Ratios_PC2    4.283041
+             Per_Share_Ratios_PC1    3.294781
+              Leverage_Ratios_PC1    1.825988
+         Profitability_Ratios_PC1    1.739144
+             Per_Share_Ratios_PC2    0.632684
+Liquidity_and_Coverage_Ratios_PC2    0.175129
+                Growth_Ratios_PC2   -0.047485
+              Leverage_Ratios_PC2   -0.198037
+             Cash_Flow_Ratios_PC2   -0.260373
 
 GradientBoosting Model:
 Feature Importance from GradientBoosting Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.576649
-      Cost_and_Expense_Ratios_PC1    0.075725
-         Profitability_Ratios_PC1    0.062908
-              Activity_Ratios_PC1    0.054575
-Liquidity_and_Coverage_Ratios_PC2    0.043115
-              Activity_Ratios_PC2    0.034843
-Liquidity_and_Coverage_Ratios_PC1    0.034230
-             Per_Share_Ratios_PC1    0.021382
-             Cash_Flow_Ratios_PC1    0.018732
-         Profitability_Ratios_PC2    0.018615
+              Leverage_Ratios_PC1    0.511656
+      Cost_and_Expense_Ratios_PC1    0.156245
+Liquidity_and_Coverage_Ratios_PC2    0.063828
+Liquidity_and_Coverage_Ratios_PC1    0.057982
+         Profitability_Ratios_PC2    0.029997
+              Activity_Ratios_PC1    0.027750
+             Cash_Flow_Ratios_PC1    0.022171
+         Profitability_Ratios_PC1    0.021451
+                Growth_Ratios_PC1    0.019907
+             Per_Share_Ratios_PC2    0.017677
 
 KNN Model:
 Feature Importance from KNN Model:
@@ -8214,77 +8218,77 @@ Liquidity_and_Coverage_Ratios_PC2       None
 
 
 _______________________________________________________________________________
- Total time taken by ADASYN_AE_3_PCA: 65.82 mins
+ Total time taken by ADASYN_AE_3_PCA: 100.16 mins
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 10:37:29,330 - INFO - ANN has been trained in 186.42 seconds
-2024-07-07 10:56:58,129 - INFO - RandomForest has been trained in 1168.80 seconds
-2024-07-07 10:57:12,990 - INFO - XGBoost has been trained in 14.86 seconds
-2024-07-07 11:20:37,983 - INFO - SVM has been trained in 1404.99 seconds
-2024-07-07 11:20:38,685 - INFO - LogisticRegression has been trained in 0.70 seconds
-2024-07-07 12:11:53,191 - INFO - GradientBoosting has been trained in 3074.50 seconds
-2024-07-07 12:11:56,460 - INFO - KNN has been trained in 3.27 seconds
-2024-07-07 12:11:56,471 - INFO - Naive Bayes has been trained in 0.01 seconds
+<pre>2024-07-11 10:14:19,285 - INFO - ANN has been trained in 178.20 seconds
+2024-07-11 10:34:25,161 - INFO - RandomForest has been trained in 1205.88 seconds
+2024-07-11 10:34:41,048 - INFO - XGBoost has been trained in 15.89 seconds
+2024-07-11 10:58:19,925 - INFO - SVM has been trained in 1418.88 seconds
+2024-07-11 10:58:20,618 - INFO - LogisticRegression has been trained in 0.69 seconds
+2024-07-11 11:49:17,087 - INFO - GradientBoosting has been trained in 3056.47 seconds
+2024-07-11 11:49:20,226 - INFO - KNN has been trained in 3.14 seconds
+2024-07-11 11:49:20,235 - INFO - Naive Bayes has been trained in 0.01 seconds
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 708us/step
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 682us/step
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 12:11:59,840 - INFO - Models have been tested in 3.37 seconds
+<pre>2024-07-11 11:49:24,164 - INFO - Models have been tested in 3.93 seconds
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 578us/step
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 528us/step
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 12:12:03,145 - INFO - Models have been evaluated in 3.30 seconds
-2024-07-07 12:13:52,215 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 12:13:53,758 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 12:13:55,200 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 12:13:56,619 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 12:14:17,778 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 12:14:38,814 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 12:14:59,893 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 12:15:00,316 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 12:15:00,619 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 12:15:03,519 - INFO - LIME explanation for SVM created and saved
-2024-07-07 12:15:03,846 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 12:15:04,190 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 12:15:04,617 - INFO - LIME explanation for KNN created and saved
-2024-07-07 12:15:04,910 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 12:15:04,911 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 12:15:04,941 - INFO - ANN model saved
-2024-07-07 12:15:04,988 - INFO - RandomForest model saved
-2024-07-07 12:15:04,998 - INFO - XGBoost model saved
-2024-07-07 12:15:05,001 - INFO - SVM model saved
-2024-07-07 12:15:05,003 - INFO - LogisticRegression model saved
-2024-07-07 12:15:05,038 - INFO - GradientBoosting model saved
-2024-07-07 12:15:05,042 - INFO - KNN model saved
-2024-07-07 12:15:05,043 - INFO - NaiveBayes model saved
-2024-07-07 12:15:05,044 - INFO - Models have been saved
-2024-07-07 12:15:05,067 - INFO - Model interpretation summary created
-2024-07-07 12:15:05,071 - INFO - Results have been documented.
-2024-07-07 12:15:05,091 - INFO - Dataset has been split and returned
-2024-07-07 12:15:05,101 - INFO - Data has been standardized
+<pre>2024-07-11 11:49:27,624 - INFO - Models have been evaluated in 3.46 seconds
+2024-07-11 11:55:20,267 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 11:55:21,661 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 11:55:22,993 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 11:55:24,332 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 11:55:45,181 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 11:56:06,101 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 11:56:26,945 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 11:56:27,387 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 11:56:27,704 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 11:56:30,411 - INFO - LIME explanation for SVM created and saved
+2024-07-11 11:56:30,673 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 11:56:30,985 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 11:56:31,404 - INFO - LIME explanation for KNN created and saved
+2024-07-11 11:56:31,673 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 11:56:31,674 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 11:56:31,691 - INFO - ANN model saved
+2024-07-11 11:56:31,780 - INFO - RandomForest model saved
+2024-07-11 11:56:31,790 - INFO - XGBoost model saved
+2024-07-11 11:56:31,793 - INFO - SVM model saved
+2024-07-11 11:56:31,794 - INFO - LogisticRegression model saved
+2024-07-11 11:56:31,823 - INFO - GradientBoosting model saved
+2024-07-11 11:56:31,826 - INFO - KNN model saved
+2024-07-11 11:56:31,827 - INFO - NaiveBayes model saved
+2024-07-11 11:56:31,828 - INFO - Models have been saved
+2024-07-11 11:56:31,860 - INFO - Model interpretation summary created
+2024-07-11 11:56:31,869 - INFO - Results have been documented.
+2024-07-11 11:56:31,885 - INFO - Dataset has been split and returned
+2024-07-11 11:56:31,896 - INFO - Data has been standardized
 </pre>
 </div>
 </div>
@@ -8296,16 +8300,16 @@ _______________________________________________________________________________
 RandomForest Model:
 Feature Importance from RandomForest Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.254758
-Liquidity_and_Coverage_Ratios_PC1    0.179359
-      Cost_and_Expense_Ratios_PC1    0.153682
-      Cost_and_Expense_Ratios_PC2    0.071484
-Liquidity_and_Coverage_Ratios_PC2    0.055596
-         Profitability_Ratios_PC1    0.036778
-             Per_Share_Ratios_PC2    0.033949
-              Activity_Ratios_PC1    0.030313
-                Growth_Ratios_PC1    0.028375
-         Profitability_Ratios_PC2    0.026236
+              Leverage_Ratios_PC1    0.236691
+Liquidity_and_Coverage_Ratios_PC1    0.182210
+      Cost_and_Expense_Ratios_PC1    0.171348
+      Cost_and_Expense_Ratios_PC2    0.070511
+Liquidity_and_Coverage_Ratios_PC2    0.053309
+             Per_Share_Ratios_PC2    0.037249
+         Profitability_Ratios_PC1    0.035276
+              Activity_Ratios_PC1    0.031092
+                Growth_Ratios_PC1    0.026876
+             Cash_Flow_Ratios_PC2    0.025863
 
 XGBoost Model:
 Feature Importance from XGBoost Model:
@@ -8352,16 +8356,16 @@ Liquidity_and_Coverage_Ratios_PC2    0.165945
 GradientBoosting Model:
 Feature Importance from GradientBoosting Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.524390
-      Cost_and_Expense_Ratios_PC1    0.139134
-Liquidity_and_Coverage_Ratios_PC2    0.054392
-Liquidity_and_Coverage_Ratios_PC1    0.052117
-         Profitability_Ratios_PC2    0.032017
-                Growth_Ratios_PC1    0.029256
-              Activity_Ratios_PC1    0.027038
-             Cash_Flow_Ratios_PC2    0.026829
-         Profitability_Ratios_PC1    0.025694
-             Per_Share_Ratios_PC2    0.020287
+              Leverage_Ratios_PC1    0.524207
+      Cost_and_Expense_Ratios_PC1    0.138977
+Liquidity_and_Coverage_Ratios_PC2    0.054066
+Liquidity_and_Coverage_Ratios_PC1    0.052351
+         Profitability_Ratios_PC2    0.031918
+                Growth_Ratios_PC1    0.029270
+              Activity_Ratios_PC1    0.027034
+             Cash_Flow_Ratios_PC2    0.026836
+         Profitability_Ratios_PC1    0.025801
+             Per_Share_Ratios_PC2    0.020553
 
 KNN Model:
 Feature Importance from KNN Model:
@@ -8393,21 +8397,558 @@ Liquidity_and_Coverage_Ratios_PC2       None
 
 
 _______________________________________________________________________________
- Total time taken by ADASYN_MICE_3_PCA: 100.70 mins
+ Total time taken by ADASYN_MICE_3_PCA: 105.18 mins
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 12:18:18,427 - INFO - ANN has been trained in 193.33 seconds
-2024-07-07 12:37:08,929 - INFO - RandomForest has been trained in 1130.50 seconds
-2024-07-07 12:37:22,754 - INFO - XGBoost has been trained in 13.83 seconds
-2024-07-07 12:52:21,695 - INFO - SVM has been trained in 898.94 seconds
-2024-07-07 12:52:22,370 - INFO - LogisticRegression has been trained in 0.68 seconds
-2024-07-07 13:43:06,913 - INFO - GradientBoosting has been trained in 3044.54 seconds
-2024-07-07 13:43:10,012 - INFO - KNN has been trained in 3.10 seconds
-2024-07-07 13:43:10,020 - INFO - Naive Bayes has been trained in 0.01 seconds
+<pre>2024-07-11 11:59:23,819 - INFO - ANN has been trained in 171.92 seconds
+2024-07-11 12:17:58,999 - INFO - RandomForest has been trained in 1115.18 seconds
+2024-07-11 12:18:12,724 - INFO - XGBoost has been trained in 13.72 seconds
+2024-07-11 12:33:01,294 - INFO - SVM has been trained in 888.57 seconds
+2024-07-11 12:33:01,994 - INFO - LogisticRegression has been trained in 0.70 seconds
+2024-07-11 13:23:38,074 - INFO - GradientBoosting has been trained in 3036.08 seconds
+2024-07-11 13:23:41,140 - INFO - KNN has been trained in 3.07 seconds
+2024-07-11 13:23:41,147 - INFO - Naive Bayes has been trained in 0.01 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 881us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 13:23:43,739 - INFO - Models have been tested in 2.59 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 531us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 13:23:46,391 - INFO - Models have been evaluated in 2.65 seconds
+2024-07-11 13:26:56,668 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 13:26:58,125 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 13:26:59,509 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 13:27:00,886 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 13:27:21,886 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 13:27:42,893 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 13:28:03,824 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 13:28:04,239 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 13:28:04,538 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 13:28:06,698 - INFO - LIME explanation for SVM created and saved
+2024-07-11 13:28:07,156 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 13:28:07,485 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 13:28:07,902 - INFO - LIME explanation for KNN created and saved
+2024-07-11 13:28:08,177 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 13:28:08,177 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 13:28:08,194 - INFO - ANN model saved
+2024-07-11 13:28:08,256 - INFO - RandomForest model saved
+2024-07-11 13:28:08,265 - INFO - XGBoost model saved
+2024-07-11 13:28:08,268 - INFO - SVM model saved
+2024-07-11 13:28:08,270 - INFO - LogisticRegression model saved
+2024-07-11 13:28:08,299 - INFO - GradientBoosting model saved
+2024-07-11 13:28:08,303 - INFO - KNN model saved
+2024-07-11 13:28:08,305 - INFO - NaiveBayes model saved
+2024-07-11 13:28:08,306 - INFO - Models have been saved
+2024-07-11 13:28:08,332 - INFO - Model interpretation summary created
+2024-07-11 13:28:08,335 - INFO - Results have been documented.
+2024-07-11 13:28:08,353 - INFO - Dataset has been split and returned
+2024-07-11 13:28:08,364 - INFO - Data has been standardized
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Model Interpretation Summary:
+
+RandomForest Model:
+Feature Importance from RandomForest Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.307824
+Liquidity_and_Coverage_Ratios_PC1    0.183045
+      Cost_and_Expense_Ratios_PC1    0.132522
+      Cost_and_Expense_Ratios_PC2    0.075325
+Liquidity_and_Coverage_Ratios_PC2    0.061870
+         Profitability_Ratios_PC1    0.035834
+             Cash_Flow_Ratios_PC2    0.033610
+             Cash_Flow_Ratios_PC1    0.027903
+              Activity_Ratios_PC2    0.026189
+             Per_Share_Ratios_PC1    0.023271
+
+XGBoost Model:
+Feature Importance from XGBoost Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.606076
+      Cost_and_Expense_Ratios_PC1    0.075337
+Liquidity_and_Coverage_Ratios_PC1    0.039747
+             Cash_Flow_Ratios_PC2    0.032893
+              Activity_Ratios_PC2    0.032756
+Liquidity_and_Coverage_Ratios_PC2    0.032008
+              Activity_Ratios_PC1    0.025009
+             Per_Share_Ratios_PC2    0.023531
+         Profitability_Ratios_PC2    0.022202
+             Per_Share_Ratios_PC1    0.021892
+
+SVM Model:
+Feature Importance from SVM Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+LogisticRegression Model:
+Feature Importance from LogisticRegression Model:
+                          Feature  Importance
+      Cost_and_Expense_Ratios_PC1    5.997802
+         Profitability_Ratios_PC2    5.744439
+              Leverage_Ratios_PC1    2.677239
+             Per_Share_Ratios_PC1    1.701508
+         Profitability_Ratios_PC1    1.637186
+             Per_Share_Ratios_PC2    0.320759
+             Cash_Flow_Ratios_PC2    0.271707
+              Leverage_Ratios_PC2    0.045888
+                Growth_Ratios_PC2    0.024765
+Liquidity_and_Coverage_Ratios_PC2   -0.204850
+
+GradientBoosting Model:
+Feature Importance from GradientBoosting Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.678253
+      Cost_and_Expense_Ratios_PC1    0.072998
+             Cash_Flow_Ratios_PC2    0.047987
+Liquidity_and_Coverage_Ratios_PC1    0.047915
+Liquidity_and_Coverage_Ratios_PC2    0.024636
+              Activity_Ratios_PC2    0.016701
+         Profitability_Ratios_PC2    0.014970
+         Profitability_Ratios_PC1    0.014931
+             Cash_Flow_Ratios_PC1    0.014924
+             Per_Share_Ratios_PC2    0.013983
+
+KNN Model:
+Feature Importance from KNN Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+NaiveBayes Model:
+Feature Importance from NaiveBayes Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+
+_______________________________________________________________________________
+ Total time taken by KMSMOTE_AE_3_PCA: 91.61 mins
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 13:31:05,462 - INFO - ANN has been trained in 177.10 seconds
+2024-07-11 13:50:36,387 - INFO - RandomForest has been trained in 1170.92 seconds
+2024-07-11 13:50:50,082 - INFO - XGBoost has been trained in 13.69 seconds
+2024-07-11 14:06:06,416 - INFO - SVM has been trained in 916.33 seconds
+2024-07-11 14:06:07,081 - INFO - LogisticRegression has been trained in 0.66 seconds
+2024-07-11 14:57:28,303 - INFO - GradientBoosting has been trained in 3081.22 seconds
+2024-07-11 14:57:31,468 - INFO - KNN has been trained in 3.16 seconds
+2024-07-11 14:57:31,479 - INFO - Naive Bayes has been trained in 0.01 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 723us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 14:57:34,237 - INFO - Models have been tested in 2.76 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 513us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 14:57:36,949 - INFO - Models have been evaluated in 2.71 seconds
+2024-07-11 15:02:28,396 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 15:02:29,777 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 15:02:31,095 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 15:02:32,418 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 15:02:54,163 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 15:03:15,874 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 15:03:37,514 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 15:03:37,961 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 15:03:38,266 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 15:03:40,400 - INFO - LIME explanation for SVM created and saved
+2024-07-11 15:03:40,671 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 15:03:40,991 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 15:03:41,412 - INFO - LIME explanation for KNN created and saved
+2024-07-11 15:03:41,687 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 15:03:41,688 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 15:03:41,713 - INFO - ANN model saved
+2024-07-11 15:03:41,804 - INFO - RandomForest model saved
+2024-07-11 15:03:41,814 - INFO - XGBoost model saved
+2024-07-11 15:03:41,817 - INFO - SVM model saved
+2024-07-11 15:03:41,819 - INFO - LogisticRegression model saved
+2024-07-11 15:03:41,848 - INFO - GradientBoosting model saved
+2024-07-11 15:03:41,852 - INFO - KNN model saved
+2024-07-11 15:03:41,853 - INFO - NaiveBayes model saved
+2024-07-11 15:03:41,854 - INFO - Models have been saved
+2024-07-11 15:03:41,890 - INFO - Model interpretation summary created
+2024-07-11 15:03:41,915 - INFO - Results have been documented.
+2024-07-11 15:03:41,931 - INFO - Dataset has been split and returned
+2024-07-11 15:03:41,942 - INFO - Data has been standardized
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Model Interpretation Summary:
+
+RandomForest Model:
+Feature Importance from RandomForest Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.287167
+Liquidity_and_Coverage_Ratios_PC1    0.205343
+      Cost_and_Expense_Ratios_PC1    0.139605
+Liquidity_and_Coverage_Ratios_PC2    0.061355
+      Cost_and_Expense_Ratios_PC2    0.060887
+             Per_Share_Ratios_PC2    0.035925
+         Profitability_Ratios_PC1    0.035466
+             Cash_Flow_Ratios_PC2    0.033167
+              Activity_Ratios_PC1    0.025172
+             Cash_Flow_Ratios_PC1    0.021792
+
+XGBoost Model:
+Feature Importance from XGBoost Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.604689
+      Cost_and_Expense_Ratios_PC1    0.093743
+Liquidity_and_Coverage_Ratios_PC1    0.035761
+             Per_Share_Ratios_PC1    0.031384
+             Cash_Flow_Ratios_PC2    0.030782
+Liquidity_and_Coverage_Ratios_PC2    0.028183
+             Per_Share_Ratios_PC2    0.027109
+              Activity_Ratios_PC1    0.025653
+              Activity_Ratios_PC2    0.021720
+                Growth_Ratios_PC1    0.019134
+
+SVM Model:
+Feature Importance from SVM Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+LogisticRegression Model:
+Feature Importance from LogisticRegression Model:
+                          Feature  Importance
+         Profitability_Ratios_PC2    4.362338
+             Per_Share_Ratios_PC1    3.693510
+              Leverage_Ratios_PC1    2.355179
+         Profitability_Ratios_PC1    0.696369
+             Cash_Flow_Ratios_PC2    0.156147
+              Leverage_Ratios_PC2    0.047282
+                Growth_Ratios_PC2   -0.116730
+Liquidity_and_Coverage_Ratios_PC2   -0.207306
+              Activity_Ratios_PC1   -0.215940
+             Per_Share_Ratios_PC2   -0.217398
+
+GradientBoosting Model:
+Feature Importance from GradientBoosting Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.674061
+      Cost_and_Expense_Ratios_PC1    0.089625
+             Cash_Flow_Ratios_PC2    0.046111
+Liquidity_and_Coverage_Ratios_PC1    0.029470
+              Activity_Ratios_PC2    0.023156
+Liquidity_and_Coverage_Ratios_PC2    0.021903
+             Per_Share_Ratios_PC2    0.019182
+         Profitability_Ratios_PC1    0.017872
+              Activity_Ratios_PC1    0.017478
+         Profitability_Ratios_PC2    0.013321
+
+KNN Model:
+Feature Importance from KNN Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+NaiveBayes Model:
+Feature Importance from NaiveBayes Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+
+_______________________________________________________________________________
+ Total time taken by KMSMOTE_MICE_3_PCA: 95.56 mins
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 15:06:34,493 - INFO - ANN has been trained in 172.55 seconds
+2024-07-11 15:23:55,027 - INFO - RandomForest has been trained in 1040.53 seconds
+2024-07-11 15:24:08,573 - INFO - XGBoost has been trained in 13.54 seconds
+2024-07-11 15:37:29,695 - INFO - SVM has been trained in 801.12 seconds
+2024-07-11 15:37:30,340 - INFO - LogisticRegression has been trained in 0.64 seconds
+2024-07-11 16:28:03,706 - INFO - GradientBoosting has been trained in 3033.36 seconds
+2024-07-11 16:28:06,836 - INFO - KNN has been trained in 3.13 seconds
+2024-07-11 16:28:06,844 - INFO - Naive Bayes has been trained in 0.01 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 618us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 16:28:09,236 - INFO - Models have been tested in 2.39 seconds
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 531us/step
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 16:28:11,819 - INFO - Models have been evaluated in 2.58 seconds
+2024-07-11 16:29:31,045 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 16:29:32,408 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 16:29:33,720 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 16:29:35,037 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 16:29:55,617 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 16:30:16,003 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 16:30:36,376 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 16:30:36,741 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 16:30:37,043 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 16:30:39,509 - INFO - LIME explanation for SVM created and saved
+2024-07-11 16:30:39,770 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 16:30:40,087 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 16:30:40,495 - INFO - LIME explanation for KNN created and saved
+2024-07-11 16:30:40,763 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 16:30:40,764 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 16:30:40,782 - INFO - ANN model saved
+2024-07-11 16:30:40,815 - INFO - RandomForest model saved
+2024-07-11 16:30:40,824 - INFO - XGBoost model saved
+2024-07-11 16:30:40,827 - INFO - SVM model saved
+2024-07-11 16:30:40,829 - INFO - LogisticRegression model saved
+2024-07-11 16:30:40,858 - INFO - GradientBoosting model saved
+2024-07-11 16:30:40,862 - INFO - KNN model saved
+2024-07-11 16:30:40,863 - INFO - NaiveBayes model saved
+2024-07-11 16:30:40,864 - INFO - Models have been saved
+2024-07-11 16:30:40,884 - INFO - Model interpretation summary created
+2024-07-11 16:30:40,886 - INFO - Results have been documented.
+2024-07-11 16:30:40,902 - INFO - Dataset has been split and returned
+2024-07-11 16:30:40,912 - INFO - Data has been standardized
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Model Interpretation Summary:
+
+RandomForest Model:
+Feature Importance from RandomForest Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.256740
+Liquidity_and_Coverage_Ratios_PC1    0.239777
+      Cost_and_Expense_Ratios_PC1    0.111281
+Liquidity_and_Coverage_Ratios_PC2    0.084551
+      Cost_and_Expense_Ratios_PC2    0.071137
+             Cash_Flow_Ratios_PC2    0.037640
+             Cash_Flow_Ratios_PC1    0.036886
+         Profitability_Ratios_PC1    0.036248
+              Activity_Ratios_PC1    0.020348
+              Activity_Ratios_PC2    0.020314
+
+XGBoost Model:
+Feature Importance from XGBoost Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.523971
+Liquidity_and_Coverage_Ratios_PC1    0.079233
+      Cost_and_Expense_Ratios_PC1    0.074354
+Liquidity_and_Coverage_Ratios_PC2    0.045701
+             Cash_Flow_Ratios_PC1    0.039600
+             Cash_Flow_Ratios_PC2    0.033878
+      Cost_and_Expense_Ratios_PC2    0.028859
+         Profitability_Ratios_PC1    0.026411
+              Activity_Ratios_PC1    0.026028
+             Per_Share_Ratios_PC1    0.022965
+
+SVM Model:
+Feature Importance from SVM Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+LogisticRegression Model:
+Feature Importance from LogisticRegression Model:
+                          Feature  Importance
+              Activity_Ratios_PC2   15.374160
+             Per_Share_Ratios_PC1    5.067911
+         Profitability_Ratios_PC2    4.082284
+              Leverage_Ratios_PC1    2.656709
+         Profitability_Ratios_PC1    1.513397
+             Per_Share_Ratios_PC2    1.172755
+             Cash_Flow_Ratios_PC2    1.055348
+                Growth_Ratios_PC2    0.117733
+              Leverage_Ratios_PC2   -0.011707
+Liquidity_and_Coverage_Ratios_PC2   -0.405275
+
+GradientBoosting Model:
+Feature Importance from GradientBoosting Model:
+                          Feature  Importance
+              Leverage_Ratios_PC1    0.645841
+Liquidity_and_Coverage_Ratios_PC1    0.076339
+      Cost_and_Expense_Ratios_PC1    0.056755
+Liquidity_and_Coverage_Ratios_PC2    0.051936
+             Cash_Flow_Ratios_PC1    0.030002
+             Cash_Flow_Ratios_PC2    0.029184
+         Profitability_Ratios_PC1    0.021687
+         Profitability_Ratios_PC2    0.013848
+              Activity_Ratios_PC2    0.012675
+              Activity_Ratios_PC1    0.012428
+
+KNN Model:
+Feature Importance from KNN Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+NaiveBayes Model:
+Feature Importance from NaiveBayes Model:
+                          Feature Importance
+Liquidity_and_Coverage_Ratios_PC1       None
+Liquidity_and_Coverage_Ratios_PC2       None
+              Leverage_Ratios_PC1       None
+              Leverage_Ratios_PC2       None
+              Activity_Ratios_PC1       None
+              Activity_Ratios_PC2       None
+         Profitability_Ratios_PC1       None
+         Profitability_Ratios_PC2       None
+      Cost_and_Expense_Ratios_PC1       None
+      Cost_and_Expense_Ratios_PC2       None
+
+
+_______________________________________________________________________________
+ Total time taken by SVMSMOTE_AE_3_PCA: 86.98 mins
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2024-07-11 16:33:33,160 - INFO - ANN has been trained in 172.25 seconds
+2024-07-11 16:50:54,337 - INFO - RandomForest has been trained in 1041.18 seconds
+2024-07-11 16:51:07,548 - INFO - XGBoost has been trained in 13.21 seconds
+2024-07-11 17:04:32,283 - INFO - SVM has been trained in 804.73 seconds
+2024-07-11 17:04:33,091 - INFO - LogisticRegression has been trained in 0.81 seconds
+2024-07-11 17:54:30,627 - INFO - GradientBoosting has been trained in 2997.53 seconds
+2024-07-11 17:54:33,744 - INFO - KNN has been trained in 3.12 seconds
+2024-07-11 17:54:33,753 - INFO - Naive Bayes has been trained in 0.01 seconds
 </pre>
 </div>
 </div>
@@ -8421,49 +8962,47 @@ _______________________________________________________________________________
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 13:43:12,633 - INFO - Models have been tested in 2.61 seconds
+<pre>2024-07-11 17:54:36,206 - INFO - Models have been tested in 2.45 seconds
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 602us/step
+<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 502us/step
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 13:43:15,239 - INFO - Models have been evaluated in 2.60 seconds
-2024-07-07 13:47:56,422 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 13:47:57,905 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 13:47:59,308 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 13:48:00,742 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 13:48:22,047 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 13:48:43,132 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 13:49:04,254 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 13:49:04,720 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 13:49:05,120 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 13:49:07,247 - INFO - LIME explanation for SVM created and saved
-2024-07-07 13:49:07,543 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 13:49:07,884 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 13:49:08,324 - INFO - LIME explanation for KNN created and saved
-2024-07-07 13:49:08,612 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 13:49:08,613 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 13:49:08,634 - INFO - ANN model saved
-2024-07-07 13:49:08,722 - INFO - RandomForest model saved
-2024-07-07 13:49:08,731 - INFO - XGBoost model saved
-2024-07-07 13:49:08,734 - INFO - SVM model saved
-2024-07-07 13:49:08,737 - INFO - LogisticRegression model saved
-2024-07-07 13:49:08,765 - INFO - GradientBoosting model saved
-2024-07-07 13:49:08,769 - INFO - KNN model saved
-2024-07-07 13:49:08,770 - INFO - NaiveBayes model saved
-2024-07-07 13:49:08,771 - INFO - Models have been saved
-2024-07-07 13:49:08,805 - INFO - Model interpretation summary created
-2024-07-07 13:49:08,809 - INFO - Results have been documented.
-2024-07-07 13:49:08,821 - INFO - Dataset has been split and returned
-2024-07-07 13:49:08,828 - INFO - Data has been standardized
+<pre>2024-07-11 17:54:38,736 - INFO - Models have been evaluated in 2.53 seconds
+2024-07-11 17:56:01,491 - INFO - SHAP explanations for RandomForest created and saved
+2024-07-11 17:56:02,823 - INFO - SHAP explanations for XGBoost created and saved
+2024-07-11 17:56:04,094 - INFO - SHAP explanations for SVM created and saved
+2024-07-11 17:56:05,346 - INFO - SHAP explanations for LogisticRegression created and saved
+2024-07-11 17:56:25,363 - INFO - SHAP explanations for GradientBoosting created and saved
+2024-07-11 17:56:45,483 - INFO - SHAP explanations for KNN created and saved
+2024-07-11 17:57:05,563 - INFO - SHAP explanations for NaiveBayes created and saved
+2024-07-11 17:57:05,942 - INFO - LIME explanation for RandomForest created and saved
+2024-07-11 17:57:06,242 - INFO - LIME explanation for XGBoost created and saved
+2024-07-11 17:57:08,228 - INFO - LIME explanation for SVM created and saved
+2024-07-11 17:57:08,492 - INFO - LIME explanation for LogisticRegression created and saved
+2024-07-11 17:57:08,809 - INFO - LIME explanation for GradientBoosting created and saved
+2024-07-11 17:57:09,223 - INFO - LIME explanation for KNN created and saved
+2024-07-11 17:57:09,488 - INFO - LIME explanation for NaiveBayes created and saved
+2024-07-11 17:57:09,489 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2024-07-11 17:57:09,505 - INFO - ANN model saved
+2024-07-11 17:57:09,537 - INFO - RandomForest model saved
+2024-07-11 17:57:09,546 - INFO - XGBoost model saved
+2024-07-11 17:57:09,549 - INFO - SVM model saved
+2024-07-11 17:57:09,551 - INFO - LogisticRegression model saved
+2024-07-11 17:57:09,581 - INFO - GradientBoosting model saved
+2024-07-11 17:57:09,585 - INFO - KNN model saved
+2024-07-11 17:57:09,587 - INFO - NaiveBayes model saved
+2024-07-11 17:57:09,587 - INFO - Models have been saved
+2024-07-11 17:57:09,608 - INFO - Model interpretation summary created
+2024-07-11 17:57:09,610 - INFO - Results have been documented.
 </pre>
 </div>
 </div>
@@ -8475,30 +9014,30 @@ _______________________________________________________________________________
 RandomForest Model:
 Feature Importance from RandomForest Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.294361
-Liquidity_and_Coverage_Ratios_PC1    0.189178
-      Cost_and_Expense_Ratios_PC1    0.140855
-Liquidity_and_Coverage_Ratios_PC2    0.074524
-      Cost_and_Expense_Ratios_PC2    0.070339
-         Profitability_Ratios_PC1    0.039690
-             Cash_Flow_Ratios_PC2    0.033981
-             Cash_Flow_Ratios_PC1    0.026100
-              Activity_Ratios_PC2    0.020516
-         Profitability_Ratios_PC2    0.020387
+              Leverage_Ratios_PC1    0.275064
+Liquidity_and_Coverage_Ratios_PC1    0.242968
+      Cost_and_Expense_Ratios_PC1    0.125846
+Liquidity_and_Coverage_Ratios_PC2    0.078226
+      Cost_and_Expense_Ratios_PC2    0.047307
+         Profitability_Ratios_PC1    0.037334
+             Cash_Flow_Ratios_PC1    0.033399
+             Cash_Flow_Ratios_PC2    0.030279
+              Activity_Ratios_PC2    0.023490
+             Per_Share_Ratios_PC2    0.020633
 
 XGBoost Model:
 Feature Importance from XGBoost Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.611000
-      Cost_and_Expense_Ratios_PC1    0.083739
-              Activity_Ratios_PC1    0.039036
-Liquidity_and_Coverage_Ratios_PC1    0.034878
-Liquidity_and_Coverage_Ratios_PC2    0.034268
-             Cash_Flow_Ratios_PC2    0.029417
-              Activity_Ratios_PC2    0.023815
-             Per_Share_Ratios_PC2    0.020951
-         Profitability_Ratios_PC2    0.020578
-             Cash_Flow_Ratios_PC1    0.019791
+              Leverage_Ratios_PC1    0.515313
+Liquidity_and_Coverage_Ratios_PC1    0.094884
+      Cost_and_Expense_Ratios_PC1    0.071955
+Liquidity_and_Coverage_Ratios_PC2    0.053566
+             Cash_Flow_Ratios_PC1    0.041987
+             Per_Share_Ratios_PC2    0.033123
+             Cash_Flow_Ratios_PC2    0.025626
+             Per_Share_Ratios_PC1    0.024225
+              Activity_Ratios_PC2    0.021327
+              Activity_Ratios_PC1    0.020635
 
 SVM Model:
 Feature Importance from SVM Model:
@@ -8517,30 +9056,30 @@ Liquidity_and_Coverage_Ratios_PC2       None
 LogisticRegression Model:
 Feature Importance from LogisticRegression Model:
                           Feature  Importance
-             Per_Share_Ratios_PC1    6.375538
-         Profitability_Ratios_PC2    4.673530
-      Cost_and_Expense_Ratios_PC1    3.302927
-              Leverage_Ratios_PC1    2.498492
-             Per_Share_Ratios_PC2    2.270628
-         Profitability_Ratios_PC1    0.825373
-             Cash_Flow_Ratios_PC2    0.150386
-                Growth_Ratios_PC2    0.003326
-              Leverage_Ratios_PC2   -0.133484
-Liquidity_and_Coverage_Ratios_PC2   -0.204408
+         Profitability_Ratios_PC2    4.046635
+             Per_Share_Ratios_PC1    3.474581
+              Leverage_Ratios_PC1    2.353163
+      Cost_and_Expense_Ratios_PC2    1.087933
+         Profitability_Ratios_PC1    0.990705
+             Cash_Flow_Ratios_PC2    0.606652
+              Leverage_Ratios_PC2    0.038675
+                Growth_Ratios_PC2   -0.161846
+             Per_Share_Ratios_PC2   -0.203632
+Liquidity_and_Coverage_Ratios_PC2   -0.432175
 
 GradientBoosting Model:
 Feature Importance from GradientBoosting Model:
                           Feature  Importance
-              Leverage_Ratios_PC1    0.678024
-      Cost_and_Expense_Ratios_PC1    0.093020
-             Cash_Flow_Ratios_PC2    0.040772
-Liquidity_and_Coverage_Ratios_PC1    0.031648
-Liquidity_and_Coverage_Ratios_PC2    0.028278
-              Activity_Ratios_PC1    0.022041
-         Profitability_Ratios_PC2    0.016642
-             Cash_Flow_Ratios_PC1    0.016279
-         Profitability_Ratios_PC1    0.015263
-             Per_Share_Ratios_PC2    0.012630
+              Leverage_Ratios_PC1    0.657207
+Liquidity_and_Coverage_Ratios_PC1    0.081874
+      Cost_and_Expense_Ratios_PC1    0.058239
+Liquidity_and_Coverage_Ratios_PC2    0.056355
+             Cash_Flow_Ratios_PC1    0.028875
+         Profitability_Ratios_PC1    0.017441
+             Cash_Flow_Ratios_PC2    0.016426
+              Activity_Ratios_PC1    0.014149
+              Activity_Ratios_PC2    0.012347
+      Cost_and_Expense_Ratios_PC2    0.010751
 
 KNN Model:
 Feature Importance from KNN Model:
@@ -8572,607 +9111,64 @@ Liquidity_and_Coverage_Ratios_PC2       None
 
 
 _______________________________________________________________________________
- Total time taken by KMSMOTE_AE_3_PCA: 94.06 mins
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 13:51:16,803 - INFO - ANN has been trained in 127.97 seconds
-2024-07-07 14:04:12,362 - INFO - RandomForest has been trained in 775.56 seconds
-2024-07-07 14:04:24,495 - INFO - XGBoost has been trained in 12.13 seconds
-2024-07-07 14:12:46,293 - INFO - SVM has been trained in 501.80 seconds
-2024-07-07 14:12:46,789 - INFO - LogisticRegression has been trained in 0.50 seconds
-2024-07-07 14:49:46,490 - INFO - GradientBoosting has been trained in 2219.70 seconds
-2024-07-07 14:49:48,387 - INFO - KNN has been trained in 1.89 seconds
-2024-07-07 14:49:48,395 - INFO - Naive Bayes has been trained in 0.01 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 902us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 14:49:49,943 - INFO - Models have been tested in 1.55 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 641us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 14:49:51,423 - INFO - Models have been evaluated in 1.48 seconds
-2024-07-07 14:51:48,709 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 14:51:50,454 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 14:51:51,520 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 14:51:52,568 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 14:52:06,578 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 14:52:20,833 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 14:52:35,061 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 14:52:35,507 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 14:52:35,818 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 14:52:37,338 - INFO - LIME explanation for SVM created and saved
-2024-07-07 14:52:37,632 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 14:52:37,976 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 14:52:38,375 - INFO - LIME explanation for KNN created and saved
-2024-07-07 14:52:38,676 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 14:52:38,677 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 14:52:38,695 - INFO - ANN model saved
-2024-07-07 14:52:38,754 - INFO - RandomForest model saved
-2024-07-07 14:52:38,764 - INFO - XGBoost model saved
-2024-07-07 14:52:38,766 - INFO - SVM model saved
-2024-07-07 14:52:38,768 - INFO - LogisticRegression model saved
-2024-07-07 14:52:38,796 - INFO - GradientBoosting model saved
-2024-07-07 14:52:38,800 - INFO - KNN model saved
-2024-07-07 14:52:38,801 - INFO - NaiveBayes model saved
-2024-07-07 14:52:38,802 - INFO - Models have been saved
-2024-07-07 14:52:38,828 - INFO - Model interpretation summary created
-2024-07-07 14:52:38,830 - INFO - Results have been documented.
-2024-07-07 14:52:38,848 - INFO - Dataset has been split and returned
-2024-07-07 14:52:38,861 - INFO - Data has been standardized
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Model Interpretation Summary:
-
-RandomForest Model:
-Feature Importance from RandomForest Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.319627
-Liquidity_and_Coverage_Ratios_PC1    0.199593
-      Cost_and_Expense_Ratios_PC1    0.103421
-         Profitability_Ratios_PC1    0.083072
-      Cost_and_Expense_Ratios_PC2    0.060213
-Liquidity_and_Coverage_Ratios_PC2    0.036117
-              Activity_Ratios_PC1    0.028794
-              Activity_Ratios_PC2    0.025276
-             Cash_Flow_Ratios_PC2    0.024993
-         Profitability_Ratios_PC2    0.019408
-
-XGBoost Model:
-Feature Importance from XGBoost Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.586943
-      Cost_and_Expense_Ratios_PC1    0.078286
-              Activity_Ratios_PC1    0.038539
-         Profitability_Ratios_PC1    0.037865
-             Per_Share_Ratios_PC1    0.033482
-              Activity_Ratios_PC2    0.030563
-             Cash_Flow_Ratios_PC2    0.029050
-Liquidity_and_Coverage_Ratios_PC1    0.028263
-                Growth_Ratios_PC1    0.024913
-             Per_Share_Ratios_PC2    0.023002
-
-SVM Model:
-Feature Importance from SVM Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-LogisticRegression Model:
-Feature Importance from LogisticRegression Model:
-                          Feature  Importance
-             Per_Share_Ratios_PC1    4.372106
-              Leverage_Ratios_PC1    2.988116
-             Per_Share_Ratios_PC2    0.722223
-         Profitability_Ratios_PC2    0.575467
-              Activity_Ratios_PC2    0.139349
-Liquidity_and_Coverage_Ratios_PC2    0.118345
-              Leverage_Ratios_PC2    0.018585
-             Cash_Flow_Ratios_PC2   -0.017016
-                Growth_Ratios_PC2   -0.017203
-      Cost_and_Expense_Ratios_PC2   -0.173062
-
-GradientBoosting Model:
-Feature Importance from GradientBoosting Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.696497
-      Cost_and_Expense_Ratios_PC1    0.054372
-              Activity_Ratios_PC1    0.036068
-         Profitability_Ratios_PC1    0.029556
-             Per_Share_Ratios_PC1    0.026434
-             Cash_Flow_Ratios_PC2    0.025375
-              Activity_Ratios_PC2    0.022513
-Liquidity_and_Coverage_Ratios_PC1    0.022277
-Liquidity_and_Coverage_Ratios_PC2    0.020215
-                Growth_Ratios_PC1    0.017521
-
-KNN Model:
-Feature Importance from KNN Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-NaiveBayes Model:
-Feature Importance from NaiveBayes Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-
-_______________________________________________________________________________
- Total time taken by KMSMOTE_MICE_3_PCA: 63.50 mins
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 14:55:51,360 - INFO - ANN has been trained in 192.50 seconds
-2024-07-07 15:13:26,237 - INFO - RandomForest has been trained in 1054.88 seconds
-2024-07-07 15:13:40,023 - INFO - XGBoost has been trained in 13.79 seconds
-2024-07-07 15:28:05,845 - INFO - SVM has been trained in 865.82 seconds
-c:\Users\dev\Desktop\MSC thesis\Code\mscthesis\Lib\site-packages\sklearn\linear_model\_logistic.py:469: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-2024-07-07 15:28:06,485 - INFO - LogisticRegression has been trained in 0.64 seconds
-2024-07-07 16:18:03,256 - INFO - GradientBoosting has been trained in 2996.77 seconds
-2024-07-07 16:18:06,263 - INFO - KNN has been trained in 3.01 seconds
-2024-07-07 16:18:06,270 - INFO - Naive Bayes has been trained in 0.01 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 727us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 16:18:08,670 - INFO - Models have been tested in 2.40 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">172/172</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 578us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 16:18:11,073 - INFO - Models have been evaluated in 2.40 seconds
-2024-07-07 16:19:31,035 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 16:19:32,435 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 16:19:33,741 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 16:19:35,053 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 16:19:55,339 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 16:20:15,401 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 16:20:35,442 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 16:20:35,836 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 16:20:36,138 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 16:20:38,169 - INFO - LIME explanation for SVM created and saved
-2024-07-07 16:20:38,445 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 16:20:38,790 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 16:20:39,207 - INFO - LIME explanation for KNN created and saved
-2024-07-07 16:20:39,497 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 16:20:39,498 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 16:20:39,517 - INFO - ANN model saved
-2024-07-07 16:20:39,550 - INFO - RandomForest model saved
-2024-07-07 16:20:39,560 - INFO - XGBoost model saved
-2024-07-07 16:20:39,563 - INFO - SVM model saved
-2024-07-07 16:20:39,565 - INFO - LogisticRegression model saved
-2024-07-07 16:20:39,594 - INFO - GradientBoosting model saved
-2024-07-07 16:20:39,598 - INFO - KNN model saved
-2024-07-07 16:20:39,599 - INFO - NaiveBayes model saved
-2024-07-07 16:20:39,600 - INFO - Models have been saved
-2024-07-07 16:20:39,620 - INFO - Model interpretation summary created
-2024-07-07 16:20:39,623 - INFO - Results have been documented.
-2024-07-07 16:20:39,638 - INFO - Dataset has been split and returned
-2024-07-07 16:20:39,647 - INFO - Data has been standardized
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Model Interpretation Summary:
-
-RandomForest Model:
-Feature Importance from RandomForest Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.247876
-Liquidity_and_Coverage_Ratios_PC1    0.231795
-      Cost_and_Expense_Ratios_PC1    0.147334
-      Cost_and_Expense_Ratios_PC2    0.072290
-Liquidity_and_Coverage_Ratios_PC2    0.070489
-         Profitability_Ratios_PC1    0.045076
-             Cash_Flow_Ratios_PC1    0.034320
-             Cash_Flow_Ratios_PC2    0.029709
-              Activity_Ratios_PC2    0.019279
-              Activity_Ratios_PC1    0.019151
-
-XGBoost Model:
-Feature Importance from XGBoost Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.503242
-      Cost_and_Expense_Ratios_PC1    0.088409
-Liquidity_and_Coverage_Ratios_PC1    0.075224
-Liquidity_and_Coverage_Ratios_PC2    0.056867
-              Activity_Ratios_PC2    0.036598
-             Cash_Flow_Ratios_PC1    0.035002
-             Cash_Flow_Ratios_PC2    0.027541
-             Per_Share_Ratios_PC1    0.026290
-              Activity_Ratios_PC1    0.022082
-         Profitability_Ratios_PC2    0.021653
-
-SVM Model:
-Feature Importance from SVM Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-LogisticRegression Model:
-Feature Importance from LogisticRegression Model:
-                 Feature  Importance
-     Leverage_Ratios_PC1    1.988271
-Profitability_Ratios_PC2    1.659230
-    Per_Share_Ratios_PC1    1.142546
-    Cash_Flow_Ratios_PC2    0.653570
-     Activity_Ratios_PC1    0.160677
-Profitability_Ratios_PC1    0.082127
-     Leverage_Ratios_PC2    0.045274
-    Per_Share_Ratios_PC2   -0.008211
-       Growth_Ratios_PC2   -0.022705
-     Activity_Ratios_PC2   -0.137229
-
-GradientBoosting Model:
-Feature Importance from GradientBoosting Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.649140
-      Cost_and_Expense_Ratios_PC1    0.087957
-Liquidity_and_Coverage_Ratios_PC1    0.066636
-Liquidity_and_Coverage_Ratios_PC2    0.047281
-             Cash_Flow_Ratios_PC1    0.026460
-              Activity_Ratios_PC2    0.021061
-             Cash_Flow_Ratios_PC2    0.018908
-         Profitability_Ratios_PC1    0.016663
-             Per_Share_Ratios_PC1    0.011288
-                Growth_Ratios_PC1    0.010754
-
-KNN Model:
-Feature Importance from KNN Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-NaiveBayes Model:
-Feature Importance from NaiveBayes Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-
-_______________________________________________________________________________
- Total time taken by SVMSMOTE_AE_3_PCA: 88.01 mins
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 16:22:56,780 - INFO - ANN has been trained in 137.13 seconds
-2024-07-07 16:35:05,647 - INFO - RandomForest has been trained in 728.87 seconds
-2024-07-07 16:35:18,458 - INFO - XGBoost has been trained in 12.81 seconds
-2024-07-07 16:43:04,725 - INFO - SVM has been trained in 466.27 seconds
-2024-07-07 16:43:05,260 - INFO - LogisticRegression has been trained in 0.53 seconds
-2024-07-07 17:19:03,206 - INFO - GradientBoosting has been trained in 2157.94 seconds
-2024-07-07 17:19:04,905 - INFO - KNN has been trained in 1.70 seconds
-2024-07-07 17:19:04,910 - INFO - Naive Bayes has been trained in 0.00 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 748us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 17:19:06,362 - INFO - Models have been tested in 1.45 seconds
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-bold">126/126</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 652us/step
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2024-07-07 17:19:07,861 - INFO - Models have been evaluated in 1.50 seconds
-2024-07-07 17:21:37,768 - INFO - SHAP explanations for RandomForest created and saved
-2024-07-07 17:21:38,793 - INFO - SHAP explanations for XGBoost created and saved
-2024-07-07 17:21:39,840 - INFO - SHAP explanations for SVM created and saved
-2024-07-07 17:21:40,824 - INFO - SHAP explanations for LogisticRegression created and saved
-2024-07-07 17:21:55,030 - INFO - SHAP explanations for GradientBoosting created and saved
-2024-07-07 17:22:09,190 - INFO - SHAP explanations for KNN created and saved
-2024-07-07 17:22:23,489 - INFO - SHAP explanations for NaiveBayes created and saved
-2024-07-07 17:22:23,941 - INFO - LIME explanation for RandomForest created and saved
-2024-07-07 17:22:24,254 - INFO - LIME explanation for XGBoost created and saved
-2024-07-07 17:22:25,814 - INFO - LIME explanation for SVM created and saved
-2024-07-07 17:22:26,104 - INFO - LIME explanation for LogisticRegression created and saved
-2024-07-07 17:22:26,453 - INFO - LIME explanation for GradientBoosting created and saved
-2024-07-07 17:22:26,854 - INFO - LIME explanation for KNN created and saved
-2024-07-07 17:22:27,141 - INFO - LIME explanation for NaiveBayes created and saved
-2024-07-07 17:22:27,142 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
-2024-07-07 17:22:27,159 - INFO - ANN model saved
-2024-07-07 17:22:27,243 - INFO - RandomForest model saved
-2024-07-07 17:22:27,252 - INFO - XGBoost model saved
-2024-07-07 17:22:27,255 - INFO - SVM model saved
-2024-07-07 17:22:27,256 - INFO - LogisticRegression model saved
-2024-07-07 17:22:27,282 - INFO - GradientBoosting model saved
-2024-07-07 17:22:27,286 - INFO - KNN model saved
-2024-07-07 17:22:27,288 - INFO - NaiveBayes model saved
-2024-07-07 17:22:27,288 - INFO - Models have been saved
-2024-07-07 17:22:27,321 - INFO - Model interpretation summary created
-2024-07-07 17:22:27,323 - INFO - Results have been documented.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Model Interpretation Summary:
-
-RandomForest Model:
-Feature Importance from RandomForest Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.282660
-Liquidity_and_Coverage_Ratios_PC1    0.212262
-      Cost_and_Expense_Ratios_PC1    0.105820
-         Profitability_Ratios_PC1    0.091775
-      Cost_and_Expense_Ratios_PC2    0.055777
-             Cash_Flow_Ratios_PC1    0.043473
-Liquidity_and_Coverage_Ratios_PC2    0.034843
-              Activity_Ratios_PC1    0.033217
-              Activity_Ratios_PC2    0.025364
-             Cash_Flow_Ratios_PC2    0.023190
-
-XGBoost Model:
-Feature Importance from XGBoost Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.516219
-         Profitability_Ratios_PC1    0.066100
-Liquidity_and_Coverage_Ratios_PC1    0.058156
-      Cost_and_Expense_Ratios_PC1    0.055363
-Liquidity_and_Coverage_Ratios_PC2    0.042555
-              Activity_Ratios_PC1    0.040352
-             Cash_Flow_Ratios_PC1    0.035763
-             Per_Share_Ratios_PC1    0.032786
-              Activity_Ratios_PC2    0.027681
-         Profitability_Ratios_PC2    0.025099
-
-SVM Model:
-Feature Importance from SVM Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-LogisticRegression Model:
-Feature Importance from LogisticRegression Model:
-                          Feature  Importance
-             Per_Share_Ratios_PC1    3.124650
-              Leverage_Ratios_PC1    2.961973
-      Cost_and_Expense_Ratios_PC2    1.269222
-             Per_Share_Ratios_PC2    0.410330
-         Profitability_Ratios_PC2    0.367171
-Liquidity_and_Coverage_Ratios_PC2    0.209284
-              Activity_Ratios_PC2    0.158028
-              Leverage_Ratios_PC2    0.022434
-                Growth_Ratios_PC2   -0.123096
-             Cash_Flow_Ratios_PC2   -0.536345
-
-GradientBoosting Model:
-Feature Importance from GradientBoosting Model:
-                          Feature  Importance
-              Leverage_Ratios_PC1    0.636025
-Liquidity_and_Coverage_Ratios_PC1    0.068431
-         Profitability_Ratios_PC1    0.052173
-              Activity_Ratios_PC1    0.044120
-      Cost_and_Expense_Ratios_PC1    0.037730
-Liquidity_and_Coverage_Ratios_PC2    0.035531
-             Cash_Flow_Ratios_PC1    0.023064
-              Activity_Ratios_PC2    0.020921
-             Per_Share_Ratios_PC1    0.017063
-         Profitability_Ratios_PC2    0.014903
-
-KNN Model:
-Feature Importance from KNN Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-NaiveBayes Model:
-Feature Importance from NaiveBayes Model:
-                          Feature Importance
-Liquidity_and_Coverage_Ratios_PC1       None
-Liquidity_and_Coverage_Ratios_PC2       None
-              Leverage_Ratios_PC1       None
-              Leverage_Ratios_PC2       None
-              Activity_Ratios_PC1       None
-              Activity_Ratios_PC2       None
-         Profitability_Ratios_PC1       None
-         Profitability_Ratios_PC2       None
-      Cost_and_Expense_Ratios_PC1       None
-      Cost_and_Expense_Ratios_PC2       None
-
-
-_______________________________________________________________________________
- Total time taken by SVMSMOTE_MICE_3_PCA: 61.79 mins
+ Total time taken by SVMSMOTE_MICE_3_PCA: 86.48 mins
  
 _______________________________________________________________________________
- Total time taken by all the models : 473.89 mins
-Results for ADASYN_AE_3_PCA: {'ANN': {'accuracy': 0.9741293532338309, 'confusion_matrix': array([[1913,  100],
-       [   4, 2003]], dtype=int64), 'f1_score': 0.9746958637469586, 'auc_roc': 0.9864663939500373}, 'RandomForest': {'accuracy': 0.9850746268656716, 'confusion_matrix': array([[1954,   59],
-       [   1, 2006]], dtype=int64), 'f1_score': 0.9852652259332023, 'auc_roc': 0.9993600391674345}, 'XGBoost': {'accuracy': 0.9878109452736319, 'confusion_matrix': array([[1965,   48],
-       [   1, 2006]], dtype=int64), 'f1_score': 0.987934006402364, 'auc_roc': 0.9981332103658062}, 'SVM': {'accuracy': 0.9246268656716418, 'confusion_matrix': array([[1761,  252],
-       [  51, 1956]], dtype=int64), 'f1_score': 0.9281138790035587, 'auc_roc': 0.955122421747431}, 'LogisticRegression': {'accuracy': 0.8883084577114427, 'confusion_matrix': array([[1696,  317],
-       [ 132, 1875]], dtype=int64), 'f1_score': 0.893069778518695, 'auc_roc': 0.9149986968115322}, 'GradientBoosting': {'accuracy': 0.9880597014925373, 'confusion_matrix': array([[1967,   46],
-       [   2, 2005]], dtype=int64), 'f1_score': 0.988171513060621, 'auc_roc': 0.9987126527595541}, 'KNN': {'accuracy': 0.9703980099502487, 'confusion_matrix': array([[1896,  117],
-       [   2, 2005]], dtype=int64), 'f1_score': 0.9711794623395495, 'auc_roc': 0.9834469075077764}, 'NaiveBayes': {'accuracy': 0.5378109452736318, 'confusion_matrix': array([[ 213, 1800],
-       [  58, 1949]], dtype=int64), 'f1_score': 0.6772063933287005, 'auc_roc': 0.7833683696728613}}
-Results for ADASYN_MICE_3_PCA: {'ANN': {'accuracy': 0.9770156877052171, 'confusion_matrix': array([[2618,  124],
-       [   2, 2738]], dtype=int64), 'f1_score': 0.9775080328454123, 'auc_roc': 0.992935986306548}, 'RandomForest': {'accuracy': 0.990879241152864, 'confusion_matrix': array([[2694,   48],
-       [   2, 2738]], dtype=int64), 'f1_score': 0.9909518639160333, 'auc_roc': 0.9997954234481731}, 'XGBoost': {'accuracy': 0.9927033929222912, 'confusion_matrix': array([[2702,   40],
-       [   0, 2740]], dtype=int64), 'f1_score': 0.9927536231884058, 'auc_roc': 0.9998087335686563}, 'SVM': {'accuracy': 0.91353520612915, 'confusion_matrix': array([[2431,  311],
-       [ 163, 2577]], dtype=int64), 'f1_score': 0.9157782515991472, 'auc_roc': 0.9508715466892405}, 'LogisticRegression': {'accuracy': 0.850601970083911, 'confusion_matrix': array([[2198,  544],
-       [ 275, 2465]], dtype=int64), 'f1_score': 0.857540441815968, 'auc_roc': 0.8971524993744243}, 'GradientBoosting': {'accuracy': 0.9905144107989785, 'confusion_matrix': array([[2691,   51],
-       [   1, 2739]], dtype=int64), 'f1_score': 0.9905967450271248, 'auc_roc': 0.9997822464288947}, 'KNN': {'accuracy': 0.9850419554906968, 'confusion_matrix': array([[2660,   82],
-       [   0, 2740]], dtype=int64), 'f1_score': 0.9852571017619561, 'auc_roc': 0.9919371283148856}, 'NaiveBayes': {'accuracy': 0.5368478657424298, 'confusion_matrix': array([[ 276, 2466],
-       [  73, 2667]], dtype=int64), 'f1_score': 0.6775053981963673, 'auc_roc': 0.7360718240721514}}
-Results for KMSMOTE_AE_3_PCA: {'ANN': {'accuracy': 0.9812180889861415, 'confusion_matrix': array([[2643,   99],
-       [   4, 2738]], dtype=int64), 'f1_score': 0.9815379100197168, 'auc_roc': 0.9932876809986587}, 'RandomForest': {'accuracy': 0.9923413566739606, 'confusion_matrix': array([[2703,   39],
-       [   3, 2739]], dtype=int64), 'f1_score': 0.9923913043478261, 'auc_roc': 0.9997637846801597}, 'XGBoost': {'accuracy': 0.9923413566739606, 'confusion_matrix': array([[2703,   39],
-       [   3, 2739]], dtype=int64), 'f1_score': 0.9923913043478261, 'auc_roc': 0.9998300207326825}, 'SVM': {'accuracy': 0.937819110138585, 'confusion_matrix': array([[2524,  218],
-       [ 123, 2619]], dtype=int64), 'f1_score': 0.9388779351138197, 'auc_roc': 0.9775250965476918}, 'LogisticRegression': {'accuracy': 0.9088256746900073, 'confusion_matrix': array([[2470,  272],
-       [ 228, 2514]], dtype=int64), 'f1_score': 0.9095513748191028, 'auc_roc': 0.9481278605861438}, 'GradientBoosting': {'accuracy': 0.9925237053245806, 'confusion_matrix': array([[2704,   38],
-       [   3, 2739]], dtype=int64), 'f1_score': 0.9925711179561515, 'auc_roc': 0.9995206531459997}, 'KNN': {'accuracy': 0.9801239970824216, 'confusion_matrix': array([[2644,   98],
-       [  11, 2731]], dtype=int64), 'f1_score': 0.9804343923891582, 'auc_roc': 0.9896042648569595}, 'NaiveBayes': {'accuracy': 0.5574398249452954, 'confusion_matrix': array([[ 388, 2354],
-       [  73, 2669]], dtype=int64), 'f1_score': 0.6874436574372182, 'auc_roc': 0.8383312292081307}}
-Results for KMSMOTE_MICE_3_PCA: {'ANN': {'accuracy': 0.9709316770186336, 'confusion_matrix': array([[1903,  109],
-       [   8, 2005]], dtype=int64), 'f1_score': 0.9716501090380422, 'auc_roc': 0.9898319965946991}, 'RandomForest': {'accuracy': 0.9836024844720497, 'confusion_matrix': array([[1952,   60],
-       [   6, 2007]], dtype=int64), 'f1_score': 0.9838235294117647, 'auc_roc': 0.9992533620927194}, 'XGBoost': {'accuracy': 0.9878260869565217, 'confusion_matrix': array([[1964,   48],
-       [   1, 2012]], dtype=int64), 'f1_score': 0.9879695556101153, 'auc_roc': 0.9981109369614405}, 'SVM': {'accuracy': 0.9418633540372671, 'confusion_matrix': array([[1825,  187],
-       [  47, 1966]], dtype=int64), 'f1_score': 0.943831012962074, 'auc_roc': 0.9731543673873302}, 'LogisticRegression': {'accuracy': 0.9085714285714286, 'confusion_matrix': array([[1778,  234],
-       [ 134, 1879]], dtype=int64), 'f1_score': 0.9108095007270964, 'auc_roc': 0.9443532545413067}, 'GradientBoosting': {'accuracy': 0.986832298136646, 'confusion_matrix': array([[1965,   47],
-       [   6, 2007]], dtype=int64), 'f1_score': 0.986968281288419, 'auc_roc': 0.9985356119616132}, 'KNN': {'accuracy': 0.9674534161490683, 'confusion_matrix': array([[1882,  130],
-       [   1, 2012]], dtype=int64), 'f1_score': 0.9684717208182912, 'auc_roc': 0.9793785720846307}, 'NaiveBayes': {'accuracy': 0.5537888198757764, 'confusion_matrix': array([[ 278, 1734],
-       [  62, 1951]], dtype=int64), 'f1_score': 0.6848016848016848, 'auc_roc': 0.8449715270226629}}
-Results for SVMSMOTE_AE_3_PCA: {'ANN': {'accuracy': 0.9824945295404814, 'confusion_matrix': array([[2652,   90],
-       [   6, 2736]], dtype=int64), 'f1_score': 0.9827586206896551, 'auc_roc': 0.9955201551785686}, 'RandomForest': {'accuracy': 0.9943471918307805, 'confusion_matrix': array([[2717,   25],
-       [   6, 2736]], dtype=int64), 'f1_score': 0.9943667090677812, 'auc_roc': 0.9998259641069758}, 'XGBoost': {'accuracy': 0.9941648431801605, 'confusion_matrix': array([[2711,   31],
-       [   1, 2741]], dtype=int64), 'f1_score': 0.9941965904969169, 'auc_roc': 0.9998797642741353}, 'SVM': {'accuracy': 0.9367250182348651, 'confusion_matrix': array([[2526,  216],
-       [ 131, 2611]], dtype=int64), 'f1_score': 0.9376907882923325, 'auc_roc': 0.9763351086723476}, 'LogisticRegression': {'accuracy': 0.8907731582786287, 'confusion_matrix': array([[2486,  256],
-       [ 343, 2399]], dtype=int64), 'f1_score': 0.889012414304243, 'auc_roc': 0.9433863966576598}, 'GradientBoosting': {'accuracy': 0.9921590080233407, 'confusion_matrix': array([[2702,   40],
-       [   3, 2739]], dtype=int64), 'f1_score': 0.9922115558775584, 'auc_roc': 0.9997527453380725}, 'KNN': {'accuracy': 0.9886943836615609, 'confusion_matrix': array([[2683,   59],
-       [   3, 2739]], dtype=int64), 'f1_score': 0.9888086642599277, 'auc_roc': 0.9945008115911494}, 'NaiveBayes': {'accuracy': 0.5359226841721372, 'confusion_matrix': array([[ 317, 2425],
-       [ 120, 2622]], dtype=int64), 'f1_score': 0.6732571575298498, 'auc_roc': 0.7492756595541383}}
-Results for SVMSMOTE_MICE_3_PCA: {'ANN': {'accuracy': 0.9749068322981367, 'confusion_matrix': array([[1941,   72],
-       [  29, 1983]], dtype=int64), 'f1_score': 0.9751659700024589, 'auc_roc': 0.990200500918977}, 'RandomForest': {'accuracy': 0.9903105590062112, 'confusion_matrix': array([[1977,   36],
-       [   3, 2009]], dtype=int64), 'f1_score': 0.9903869854572344, 'auc_roc': 0.9993890358791119}, 'XGBoost': {'accuracy': 0.9895652173913043, 'confusion_matrix': array([[1975,   38],
-       [   4, 2008]], dtype=int64), 'f1_score': 0.9896500739280434, 'auc_roc': 0.9988526367873237}, 'SVM': {'accuracy': 0.9411180124223603, 'confusion_matrix': array([[1831,  182],
-       [  55, 1957]], dtype=int64), 'f1_score': 0.9429053240183088, 'auc_roc': 0.9738433531942967}, 'LogisticRegression': {'accuracy': 0.906832298136646, 'confusion_matrix': array([[1786,  227],
-       [ 148, 1864]], dtype=int64), 'f1_score': 0.9086034608822813, 'auc_roc': 0.9481566882855871}, 'GradientBoosting': {'accuracy': 0.991055900621118, 'confusion_matrix': array([[1979,   34],
-       [   2, 2010]], dtype=int64), 'f1_score': 0.9911242603550295, 'auc_roc': 0.9990086801594803}, 'KNN': {'accuracy': 0.9813664596273292, 'confusion_matrix': array([[1940,   73],
-       [   2, 2010]], dtype=int64), 'f1_score': 0.9816849816849816, 'auc_roc': 0.9895041079899144}, 'NaiveBayes': {'accuracy': 0.5443478260869565, 'confusion_matrix': array([[ 257, 1756],
-       [  78, 1934]], dtype=int64), 'f1_score': 0.6783584707120308, 'auc_roc': 0.8020928082770145}}
+ Total time taken by all the models : 565.97 mins
+Results for ADASYN_AE_3_PCA: {'ANN': {'accuracy': 0.9773846434433704, 'confusion_matrix': array([[2634,  108],
+       [  16, 2725]], dtype=int64), 'f1_score': 0.9777538571941156, 'precision': 0.9618778679844687, 'recall': 0.9941627143378329, 'auc_roc': 0.9931587656014206}, 'RandomForest': {'accuracy': 0.990333758891118, 'confusion_matrix': array([[2694,   48],
+       [   5, 2736]], dtype=int64), 'f1_score': 0.9904072398190045, 'precision': 0.9827586206896551, 'recall': 0.9981758482305728, 'auc_roc': 0.9997875814515031}, 'XGBoost': {'accuracy': 0.9930694875068393, 'confusion_matrix': array([[2705,   37],
+       [   1, 2740]], dtype=int64), 'f1_score': 0.9931134469010511, 'precision': 0.9866762693554195, 'recall': 0.9996351696461145, 'auc_roc': 0.999748796605348}, 'SVM': {'accuracy': 0.9182929053437899, 'confusion_matrix': array([[2431,  311],
+       [ 137, 2604]], dtype=int64), 'f1_score': 0.9207920792079208, 'precision': 0.8933104631217839, 'recall': 0.9500182415176943, 'auc_roc': 0.9517697465426936}, 'LogisticRegression': {'accuracy': 0.8670435892759438, 'confusion_matrix': array([[2249,  493],
+       [ 236, 2505]], dtype=int64), 'f1_score': 0.872974385781495, 'precision': 0.8355570380253502, 'recall': 0.9139000364830354, 'auc_roc': 0.9060929729309715}, 'GradientBoosting': {'accuracy': 0.9914280503374066, 'confusion_matrix': array([[2698,   44],
+       [   3, 2738]], dtype=int64), 'f1_score': 0.9914901321745428, 'precision': 0.9841840402588066, 'recall': 0.9989055089383436, 'auc_roc': 0.999739482920165}, 'KNN': {'accuracy': 0.9835856283056721, 'confusion_matrix': array([[2653,   89],
+       [   1, 2740]], dtype=int64), 'f1_score': 0.9838420107719928, 'precision': 0.9685401201838105, 'recall': 0.9996351696461145, 'auc_roc': 0.9928478880952742}, 'NaiveBayes': {'accuracy': 0.5363851905890935, 'confusion_matrix': array([[ 307, 2435],
+       [ 107, 2634]], dtype=int64), 'f1_score': 0.6745198463508323, 'precision': 0.5196291181692642, 'recall': 0.9609631521342575, 'auc_roc': 0.7015488126248866}}
+Results for ADASYN_MICE_3_PCA: {'ANN': {'accuracy': 0.9746442904049617, 'confusion_matrix': array([[2618,  124],
+       [  15, 2725]], dtype=int64), 'f1_score': 0.9751297190910717, 'precision': 0.9564759564759565, 'recall': 0.9945255474452555, 'auc_roc': 0.9906930979039222}, 'RandomForest': {'accuracy': 0.9903319956220358, 'confusion_matrix': array([[2689,   53],
+       [   0, 2740]], dtype=int64), 'f1_score': 0.990421109705404, 'precision': 0.9810239885427855, 'recall': 1.0, 'auc_roc': 0.9997555596373258}, 'XGBoost': {'accuracy': 0.9927033929222912, 'confusion_matrix': array([[2702,   40],
+       [   0, 2740]], dtype=int64), 'f1_score': 0.9927536231884058, 'precision': 0.9856115107913669, 'recall': 1.0, 'auc_roc': 0.9998087335686563}, 'SVM': {'accuracy': 0.91353520612915, 'confusion_matrix': array([[2431,  311],
+       [ 163, 2577]], dtype=int64), 'f1_score': 0.9157782515991472, 'precision': 0.8923130193905817, 'recall': 0.9405109489051094, 'auc_roc': 0.9508714135880357}, 'LogisticRegression': {'accuracy': 0.850601970083911, 'confusion_matrix': array([[2198,  544],
+       [ 275, 2465]], dtype=int64), 'f1_score': 0.857540441815968, 'precision': 0.8192090395480226, 'recall': 0.8996350364963503, 'auc_roc': 0.8971524993744243}, 'GradientBoosting': {'accuracy': 0.9905144107989785, 'confusion_matrix': array([[2691,   51],
+       [   1, 2739]], dtype=int64), 'f1_score': 0.9905967450271248, 'precision': 0.9817204301075269, 'recall': 0.9996350364963503, 'auc_roc': 0.9997785195951594}, 'KNN': {'accuracy': 0.9850419554906968, 'confusion_matrix': array([[2660,   82],
+       [   0, 2740]], dtype=int64), 'f1_score': 0.9852571017619561, 'precision': 0.9709425939050319, 'recall': 1.0, 'auc_roc': 0.9919371283148856}, 'NaiveBayes': {'accuracy': 0.5368478657424298, 'confusion_matrix': array([[ 276, 2466],
+       [  73, 2667]], dtype=int64), 'f1_score': 0.6775053981963673, 'precision': 0.5195791934541204, 'recall': 0.9733576642335766, 'auc_roc': 0.7360718240721514}}
+Results for KMSMOTE_AE_3_PCA: {'ANN': {'accuracy': 0.9697301239970825, 'confusion_matrix': array([[2659,   83],
+       [  83, 2659]], dtype=int64), 'f1_score': 0.9697301239970825, 'precision': 0.9697301239970825, 'recall': 0.9697301239970825, 'auc_roc': 0.9926386208855841}, 'RandomForest': {'accuracy': 0.9927060539752006, 'confusion_matrix': array([[2706,   36],
+       [   4, 2738]], dtype=int64), 'f1_score': 0.9927483683828862, 'precision': 0.9870223503965393, 'recall': 0.9985412107950401, 'auc_roc': 0.9997474916752721}, 'XGBoost': {'accuracy': 0.9941648431801605, 'confusion_matrix': array([[2711,   31],
+       [   1, 2741]], dtype=int64), 'f1_score': 0.9941965904969169, 'precision': 0.9888167388167388, 'recall': 0.99963530269876, 'auc_roc': 0.9997288045961968}, 'SVM': {'accuracy': 0.937272064186725, 'confusion_matrix': array([[2536,  206],
+       [ 138, 2604]], dtype=int64), 'f1_score': 0.9380403458213257, 'precision': 0.9266903914590747, 'recall': 0.949671772428884, 'auc_roc': 0.9770516018750388}, 'LogisticRegression': {'accuracy': 0.9086433260393874, 'confusion_matrix': array([[2467,  275],
+       [ 226, 2516]], dtype=int64), 'f1_score': 0.9094523766491958, 'precision': 0.9014690075241849, 'recall': 0.9175784099197666, 'auc_roc': 0.9475611300242971}, 'GradientBoosting': {'accuracy': 0.9925237053245806, 'confusion_matrix': array([[2704,   38],
+       [   3, 2739]], dtype=int64), 'f1_score': 0.9925711179561515, 'precision': 0.9863161685271876, 'recall': 0.9989059080962801, 'auc_roc': 0.999436195528827}, 'KNN': {'accuracy': 0.9777534646243617, 'confusion_matrix': array([[2631,  111],
+       [  11, 2731]], dtype=int64), 'f1_score': 0.9781518624641834, 'precision': 0.9609429978888107, 'recall': 0.9959883296863603, 'auc_roc': 0.9893184389997876}, 'NaiveBayes': {'accuracy': 0.5559810357403355, 'confusion_matrix': array([[ 383, 2359],
+       [  76, 2666]], dtype=int64), 'f1_score': 0.6864941418823226, 'precision': 0.530547263681592, 'recall': 0.9722830051057623, 'auc_roc': 0.8071921047689425}}
+Results for KMSMOTE_MICE_3_PCA: {'ANN': {'accuracy': 0.9781181619256017, 'confusion_matrix': array([[2659,   83],
+       [  37, 2705]], dtype=int64), 'f1_score': 0.9783001808318263, 'precision': 0.9702295552367288, 'recall': 0.986506199854121, 'auc_roc': 0.9932256345759642}, 'RandomForest': {'accuracy': 0.9930707512764405, 'confusion_matrix': array([[2708,   34],
+       [   4, 2738]], dtype=int64), 'f1_score': 0.9931084512150888, 'precision': 0.9877344877344877, 'recall': 0.9985412107950401, 'auc_roc': 0.9997593290420884}, 'XGBoost': {'accuracy': 0.9936177972283005, 'confusion_matrix': array([[2709,   33],
+       [   2, 2740]], dtype=int64), 'f1_score': 0.9936536718041704, 'precision': 0.9880995311936531, 'recall': 0.9992706053975201, 'auc_roc': 0.9998380009799744}, 'SVM': {'accuracy': 0.937454412837345, 'confusion_matrix': array([[2536,  206],
+       [ 137, 2605]], dtype=int64), 'f1_score': 0.9382315865298038, 'precision': 0.9267164710067591, 'recall': 0.950036469730124, 'auc_roc': 0.976826026884921}, 'LogisticRegression': {'accuracy': 0.9028081692195478, 'confusion_matrix': array([[2454,  288],
+       [ 245, 2497]], dtype=int64), 'f1_score': 0.9035643206079247, 'precision': 0.8965888689407541, 'recall': 0.9106491611962072, 'auc_roc': 0.9447957083294096}, 'GradientBoosting': {'accuracy': 0.9930707512764405, 'confusion_matrix': array([[2707,   35],
+       [   3, 2739]], dtype=int64), 'f1_score': 0.9931109499637418, 'precision': 0.9873828406633021, 'recall': 0.9989059080962801, 'auc_roc': 0.9997156371881651}, 'KNN': {'accuracy': 0.9826768781911014, 'confusion_matrix': array([[2652,   90],
+       [   5, 2737]], dtype=int64), 'f1_score': 0.9829412820973245, 'precision': 0.9681641315882561, 'recall': 0.9981765134938001, 'auc_roc': 0.9916931610876759}, 'NaiveBayes': {'accuracy': 0.5516046681254558, 'confusion_matrix': array([[ 339, 2403],
+       [  56, 2686]], dtype=int64), 'f1_score': 0.6859915719576044, 'precision': 0.5278050697583022, 'recall': 0.9795769511305616, 'auc_roc': 0.8358999803685918}}
+Results for SVMSMOTE_AE_3_PCA: {'ANN': {'accuracy': 0.9812180889861415, 'confusion_matrix': array([[2643,   99],
+       [   4, 2738]], dtype=int64), 'f1_score': 0.9815379100197168, 'precision': 0.9651039830807191, 'recall': 0.9985412107950401, 'auc_roc': 0.9946508402402374}, 'RandomForest': {'accuracy': 0.9947118891320205, 'confusion_matrix': array([[2715,   27],
+       [   2, 2740]], dtype=int64), 'f1_score': 0.9947358867308042, 'precision': 0.9902421395012649, 'recall': 0.9992706053975201, 'auc_roc': 0.9999214610662355}, 'XGBoost': {'accuracy': 0.9930707512764405, 'confusion_matrix': array([[2707,   35],
+       [   3, 2739]], dtype=int64), 'f1_score': 0.9931109499637418, 'precision': 0.9873828406633021, 'recall': 0.9989059080962801, 'auc_roc': 0.9998229715142413}, 'SVM': {'accuracy': 0.9390955506929248, 'confusion_matrix': array([[2534,  208],
+       [ 126, 2616]], dtype=int64), 'f1_score': 0.9399928135106, 'precision': 0.9263456090651558, 'recall': 0.9540481400437637, 'auc_roc': 0.9774536068323685}, 'LogisticRegression': {'accuracy': 0.9035375638220278, 'confusion_matrix': array([[2498,  244],
+       [ 285, 2457]], dtype=int64), 'f1_score': 0.9028109498438361, 'precision': 0.9096630877452795, 'recall': 0.8960612691466083, 'auc_roc': 0.9536440070204896}, 'GradientBoosting': {'accuracy': 0.9928884026258206, 'confusion_matrix': array([[2708,   34],
+       [   5, 2737]], dtype=int64), 'f1_score': 0.9929258117177581, 'precision': 0.9877300613496932, 'recall': 0.9981765134938001, 'auc_roc': 0.9996596424530002}, 'KNN': {'accuracy': 0.9897884755652808, 'confusion_matrix': array([[2687,   55],
+       [   1, 2741]], dtype=int64), 'f1_score': 0.9898880462260744, 'precision': 0.9803290414878397, 'recall': 0.99963530269876, 'auc_roc': 0.9939639404545867}, 'NaiveBayes': {'accuracy': 0.5351932895696572, 'confusion_matrix': array([[ 313, 2429],
+       [ 120, 2622]], dtype=int64), 'f1_score': 0.6729115873219556, 'precision': 0.5191051276974856, 'recall': 0.9562363238512035, 'auc_roc': 0.7500727532544779}}
+Results for SVMSMOTE_MICE_3_PCA: {'ANN': {'accuracy': 0.9828592268417213, 'confusion_matrix': array([[2653,   89],
+       [   5, 2737]], dtype=int64), 'f1_score': 0.983117816091954, 'precision': 0.9685067232837934, 'recall': 0.9981765134938001, 'auc_roc': 0.9958149588139437}, 'RandomForest': {'accuracy': 0.9925237053245806, 'confusion_matrix': array([[2707,   35],
+       [   6, 2736]], dtype=int64), 'f1_score': 0.9925630328314892, 'precision': 0.9873691808011548, 'recall': 0.9978118161925602, 'auc_roc': 0.9998945942336862}, 'XGBoost': {'accuracy': 0.9945295404814004, 'confusion_matrix': array([[2713,   29],
+       [   1, 2741]], dtype=int64), 'f1_score': 0.9945573294629898, 'precision': 0.9895306859205776, 'recall': 0.99963530269876, 'auc_roc': 0.9998450501984155}, 'SVM': {'accuracy': 0.9341721371261853, 'confusion_matrix': array([[2530,  212],
+       [ 149, 2593]], dtype=int64), 'f1_score': 0.9349197764557419, 'precision': 0.9244206773618538, 'recall': 0.9456601021152443, 'auc_roc': 0.9732490140404472}, 'LogisticRegression': {'accuracy': 0.8920495988329686, 'confusion_matrix': array([[2485,  257],
+       [ 335, 2407]], dtype=int64), 'f1_score': 0.8904920458749538, 'precision': 0.9035285285285285, 'recall': 0.8778264040846098, 'auc_roc': 0.9438662755281461}, 'GradientBoosting': {'accuracy': 0.9916119620714807, 'confusion_matrix': array([[2702,   40],
+       [   6, 2736]], dtype=int64), 'f1_score': 0.9916636462486408, 'precision': 0.9855907780979827, 'recall': 0.9978118161925602, 'auc_roc': 0.9998310847656547}, 'KNN': {'accuracy': 0.9896061269146609, 'confusion_matrix': array([[2686,   56],
+       [   1, 2741]], dtype=int64), 'f1_score': 0.989709333814768, 'precision': 0.9799785484447623, 'recall': 0.99963530269876, 'auc_roc': 0.9943150048333698}, 'NaiveBayes': {'accuracy': 0.536834427425237, 'confusion_matrix': array([[ 290, 2452],
+       [  88, 2654]], dtype=int64), 'f1_score': 0.6763506625891947, 'precision': 0.5197806502154328, 'recall': 0.9679066374908826, 'auc_roc': 0.7783898627450667}}
 </pre>
 </div>
 </div>
