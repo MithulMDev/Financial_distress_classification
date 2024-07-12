@@ -37,6 +37,13 @@
 - <b>Visualize TSNE graphs<b>
 - This is to capture pattern of the data
 - explain about the prior and post methods TSNE graphs and your interpretations
+- MICE vs AE
+  - AE has preserved original data patterns, as it closely resembles the original data prior to preprocessing
+  - MICE has seen to have a bit more dispersion in the clusters. while it has maintained a close resembling pattern, it has also introduced some variability through the process, impersonating the underlying patterns and relationships of variables among each other.
+  - MICE also suggests that there are possible new outliers as it is spread out when compared to AE, indicating the imputation could have introduced some meaningful and structural variability
+  - MICE are slightly more dispersed suggesting, while it has handled imputation well, it has not preserved data like AE. So in conclusion AE seems to preserve the underlying patterns of the data - originality of the data. while MICE is observed to have introduced structural changes as it focuses on preserving the relationship between the variables for each instance. As a company's financial metrics are interelated and is different for each of the company based on industry, scale and nature of operations etc...
+  - The relationships between variables in finance are iften complexand multifaceted. The changes and variability introduced by MICE could be capturing these patterns which may not be apparent in the large chunk of data, as there is a high possibility that these pattern differ for each instance
+  - The balance between preserving the originality and allowing meaningful variations is crucial.
   -------------------------- should populate
 
 
