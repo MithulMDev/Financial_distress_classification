@@ -35,6 +35,8 @@
 
 
 - <b>Visualize TSNE graphs<b>
+- Prior
+  - This graph shows that there are overlapping clusters, class imbalance is observed as one color is dominating, the lack of clear boundaries suggest that the data needs to be preprocessed as straight forward classification is challenging.
 - MICE vs AE
   - AE has preserved original data patterns, as it closely resembles the original data prior to preprocessing
   - MICE has seen to have a bit more dispersion in the clusters. while it has maintained a close resembling pattern, it has also introduced some variability through the process, impersonating the underlying patterns and relationships of variables among each other.
@@ -47,6 +49,15 @@
 
 - <b>Comrpehensive analysis<b>
 - Analysis such as correlation matrix, statistics, outlier detection (isolation forests, Z score), skewness and kurtosis are done in prior to preprocessing dataset and after each of the imbalance handling methods.
+  - The df.info shows that there are typical outliers in the data
+  - The correlation matrix shows that there are noticeable variables with strong correlations.
+  - The extreme skewness and kurtosis values suggest that many features have significant outliers. These outliers could be genuine extreme values or potential data quality issues. They indicate indicate the presence of rare but high-value events or measurements
+  - The high kurtosis values suggest that many data points are concentrated around the mean, with occasional extreme values causing heavy tails.
+  - Correlation heatmap of processed data also shows a few highly correlated ratios.
+  - Especially SVMSMOTE + MICE combination has preserved most of the correlated variables or has shown more number of correlated variables
+  - The correlated variables for MICE and Autoencoders are observed to be different
+  - Similar patterns of non-normal distributions are observed on PCA processed datasets of various combinations through Skewness and kurtosis.
+  - The Pearson and Spearman statistics post processing of all the combinations are observed to have strong non linear relationship, thus preserving the original data pattern.
 -------------------------- should populate answers
 - This is to know the preservation of patterns of data of each methods with the original dataset
 
