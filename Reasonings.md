@@ -54,7 +54,8 @@
   - The extreme skewness and kurtosis values suggest that many features have significant outliers. These outliers could be genuine extreme values or potential data quality issues. They indicate indicate the presence of rare but high-value events or measurements
   - The high kurtosis values suggest that many data points are concentrated around the mean, with occasional extreme values causing heavy tails.
   - Correlation heatmap of processed data also shows a few highly correlated ratios.
-  - Especially SVMSMOTE + MICE combination has preserved most of the correlated variables or has shown more number of correlated variables
+  - The patterns of correlated variables are similar for eahc method - MICE and autoencoder. MICE with class handling combinations has seen to have high number of correlated variables
+  - Especially combinations with MICE has preserved most of the correlated variables or has shown more number of correlated variables
   - The correlated variables for MICE and Autoencoders are observed to be different
   - Similar patterns of non-normal distributions are observed on PCA processed datasets of various combinations through Skewness and kurtosis.
   - The Pearson and Spearman statistics post processing of all the combinations are observed to have strong non linear relationship, thus preserving the original data pattern.
