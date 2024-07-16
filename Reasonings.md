@@ -44,8 +44,20 @@
   - MICE are slightly more dispersed suggesting, while it has handled imputation well, it has not preserved data like AE. So in conclusion AE seems to preserve the underlying patterns of the data - originality of the data. while MICE is observed to have introduced structural changes as it focuses on preserving the relationship between the variables for each instance. As a company's financial metrics are interelated and is different for each of the company based on industry, scale and nature of operations etc...
   - The relationships between variables in finance are often complex and multifaceted. The changes and variability introduced by MICE could be capturing these patterns which may not be apparent in the large chunk of data, as there is a high possibility that these pattern differ for each instance
   - The balance between preserving the originality and allowing meaningful variations is crucial.
+  
 - Imputation with class handling - ADASYN, KMSMOTE, SVMSMOTE
-
+  - The visualization shows that the ADASYN has generated interwoven data with varied scales as resembled by the gradual transition of colors, but is preserving more of the original data pattern.
+    - It is also suggesting the ADASYN is generating samples that bridge gaps between existing data points, potentially creating a more countinuous representation of data. Still this could be beneficial in cases of detecting subtle patterns that could be lost due to aggressive sampling
+  - The KmeansSMOTE plot shows that there are distinct clusters with sharp boundaries.
+    - The spread of light green and yellow points across different areas, also overlaying colors, suggest KMeansSMOTE is creating new instances of data based on cluster centroids and the minority, which may not always follow the original data distributions and its patterns
+    - It emphasizes well defined boundaries of data, which could be advantageous in classification tasks
+  - The SVMSMOTE shows that the this method is in the middle of the ADASYN and Kmeans in the cluster definition
+    - Color transition appears smoother than Kmeans while also having distinct boundaries with minimal overlapping data of different scales
+    - this happens as SVMSMOTE generates instances based on the support vectors of the minority class, and since support vectors lie close to the decision boundaries of the classes, there is distinct clusters and is also suggesting that this method preserves the range of scales of data.
+    - Thought the boundaries are not as sharply seen as in the case of KMeansSMOTE, there is very minimal over lapping of data.
+    - This suggests that SVMSMOTE is creating more instances along the class boundaries, thus enhancing seperation while attempting to maintain the original structure 
+    - There are different rows of data present in each of the dataset processed using each combinations, this is due to different class imbalance handling mechanisms. But nonetheless they are varied in a range of 100 rows approximately.
+  
 
 - <b>Comrpehensive analysis<b>
 - Analysis such as correlation matrix, statistics, outlier detection (isolation forests, Z score), skewness and kurtosis are done in prior to preprocessing dataset and after each of the imbalance handling methods.
@@ -59,6 +71,14 @@
   - The correlated variables for MICE and Autoencoders are observed to be different
   - Similar patterns of non-normal distributions are observed on PCA processed datasets of various combinations through Skewness and kurtosis.
   - The Pearson and Spearman statistics post processing of all the combinations are observed to have strong non linear relationship, thus preserving the original data pattern.
+
+  - Isolation forest and Z score:
+    - Since the underlying data is seen to have non-normal ditributions through high number of skewness and kurtosis, we are implementing isolation forest (which doesn't follow any assumptions on the pattern of the data), and z-score (which assumes that the data follows a normal distribution) to have a comprehensive understanding of the pattern and the outliers
+    - Kmeans SMOTE has resulted in fewest of outliers compared to other methods as seen through Z score analysis, while ADASYN seems to have generated high number of potential outliers
+    - SVMSMOTE has seen to closely replicate the original data with similar no of potential outliers
+    - SVMSMOTE + AE has been observed to maintain a reasonable balance in terms of data distribution and outlier generation
+    - Isolations forests show the consistency of proportion of outlier values generated through preprocessing methods. Thus indicating the oversampling methods have preserved the outlier data's proportion to the normal data.
+    - Since the z scores have stated more proportion of outliers in the original dataset, and the preprocessing methods have shown to thicken the tails of the distribution, resulting in lesser no of outliers detected by Z score.
 -------------------------- should populate answers
 - This is to know the preservation of patterns of data of each methods with the original dataset
 
@@ -75,6 +95,7 @@
 
   
 - <b>Class imbalance handling - ADASYN, KmeansSMOTE, SVMSMOTE
+- Since in the real life there are very less proportion of financially distressed companies compared to the healthy companies, Class imbalance issues persist in most of the financial predictions.
 - Give basic mathematical formulae for each and also a basic interpretation. 
 - Give the reasoning why these (each of them) is choosen among other variety of types of methods
 - The above given statistical, pattern visualization - TSNE, linear and non linear, outliers, skewness, kurtosis, and other analysis methods are computed and given after implementation of each of the methods
