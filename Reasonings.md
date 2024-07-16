@@ -15,16 +15,16 @@
 - Z-score > 3: 2048 outliers
 
 - ADASYN:
-- with MICE: IF: 2741, Z-score: 2166
-- with AE: IF: 2743, Z-score: 2184
+- with MICE: IF: 2738, Z-score: 2245
+- with AE: IF: 2741, Z-score: 2233
 
 - KMeans SMOTE:
-- with MICE: IF: 2742, Z-score: 1957
-- with AE: IF: 2739, Z-score: 1985
+- with MICE: IF: 2742, Z-score: 1945
+- with AE: IF: 2738, Z-score: 2000
 
 - SVM SMOTE:
-- with MICE: IF: 2742, Z-score: 2026
-- with AE: IF: 2740, Z-score: 2026
+- with MICE: IF: 2742, Z-score: 1998
+- with AE: IF: 2742, Z-score: 2014
 
 - Both MICE and AE perform similarly in capturing and reflecting the patterns of outliers, though AE seems to preserve more outliers compared.
 - ADASYN significantly has increased the number of outliers detected as detected by isolations forests, which might introduce too many outliers
