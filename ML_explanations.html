@@ -7757,6 +7757,9 @@ a.anchor-link {
 <span class="k">def</span> <span class="nf">explainability_shap</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">df_name</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Generate SHAP graphs for each of the models</span>
+<span class="sd">    - It indicates the contributions of variables for the prediction of each of the models</span>
+<span class="sd">    - It shows how variabels / features affect the model performance</span>
 <span class="sd">    </span>
 <span class="sd">    """</span>
     <span class="c1"># Ensure X_test is a DataFrame with named columns</span>
@@ -7789,6 +7792,9 @@ a.anchor-link {
 <span class="k">def</span> <span class="nf">explainability_lime</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">df_name</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Generates LIME graphs for each of the models</span>
+<span class="sd">    - This shows the influence of features for the model in classifying the instances</span>
+<span class="sd">    - Unlike SHAP, this also shows the direction / influence of the variables on each of the classes</span>
 <span class="sd">    </span>
 <span class="sd">    """</span>
     <span class="c1"># Ensure X_train and X_test are DataFrames with named columns</span>
@@ -7829,6 +7835,11 @@ a.anchor-link {
 
 
 <span class="k">def</span> <span class="nf">interpret_results</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    This shows the importance and the influence of the features in predictions of each of the models</span>
+<span class="sd">    """</span>
+    
     <span class="n">summary</span> <span class="o">=</span> <span class="s2">"Model Interpretation Summary:</span><span class="se">\n\n</span><span class="s2">"</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">'ANN'</span><span class="p">:</span>
